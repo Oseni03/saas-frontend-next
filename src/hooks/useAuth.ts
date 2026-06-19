@@ -1,21 +1,26 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import api from "@/lib/api";
-import { authService } from "@/lib/api-services";
-import type { Creator } from "@/lib/types";
+import type {
+	LoginRequest,
+	RegisterRequest,
+	RefreshRequest,
+	VerifyEmailRequest,
+	PasswordResetRequest,
+	PasswordResetConfirm,
+	UserResponse,
+	UserUpdateRequest,
+} from "@/schemas";
 
-interface AuthResponse {
-	access: string;
-	refresh: string;
-	creator: Creator;
-	is_new: boolean;
+interface TokenPair {
+	access_token: string;
+	refresh_token: string;
+	token_type: "bearer";
 }
 
 const storeTokens = (access: string, refresh: string) => {
 	if (typeof window === "undefined") return;
-	// Store in localStorage for the Axios interceptor
 	localStorage.setItem("access_token", access);
 	localStorage.setItem("refresh_token", refresh);
-	// Store access_token in a cookie so Next.js middleware can read it
 	document.cookie = `access_token=${access}; path=/; SameSite=Strict`;
 };
 
@@ -23,44 +28,89 @@ export const clearTokens = () => {
 	if (typeof window === "undefined") return;
 	localStorage.removeItem("access_token");
 	localStorage.removeItem("refresh_token");
-	// Clear the cookie by setting an expired date
 	document.cookie =
 		"access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Strict";
 };
 
+// ======================
+// Auth Hooks
+// ======================
+
 export const useLogin = () => {
 	return useMutation({
-		mutationFn: async (credentials: {
-			email: string;
-			password: string;
-		}) => {
-			const response = await api.post<AuthResponse>(
-				"/auth/login/",
+		mutationFn: async (credentials: LoginRequest) => {
+			const response = await api.post<TokenPair>(
+				"/auth/login",
 				credentials,
 			);
 			return response.data;
 		},
-		onSuccess: (data) => {
-			storeTokens(data.access, data.refresh);
+		onSuccess: (data: TokenPair) => {
+			storeTokens(data.access_token, data.refresh_token);
 		},
 	});
 };
 
 export const useSignup = () => {
 	return useMutation({
-		mutationFn: async (userData: {
-			email: string;
-			password: string;
-			username: string;
-		}) => {
-			const response = await api.post<AuthResponse>(
-				"/auth/signup/",
+		mutationFn: async (userData: RegisterRequest) => {
+			const response = await api.post<UserResponse>(
+				"/auth/register",
 				userData,
 			);
 			return response.data;
 		},
-		onSuccess: (data) => {
-			storeTokens(data.access, data.refresh);
+		// Note: Registration no longer returns tokens (email verification required)
+	});
+};
+
+export const useRefreshToken = () => {
+	return useMutation({
+		mutationFn: async (payload: RefreshRequest) => {
+			const response = await api.post<TokenPair>(
+				"/auth/refresh",
+				payload,
+			);
+			return response.data;
+		},
+		onSuccess: (data: TokenPair) => {
+			storeTokens(data.access_token, data.refresh_token);
+		},
+	});
+};
+
+export const useVerifyEmail = () => {
+	return useMutation({
+		mutationFn: async (payload: VerifyEmailRequest) => {
+			const response = await api.post<UserResponse>(
+				"/auth/verify-email",
+				payload,
+			);
+			return response.data;
+		},
+	});
+};
+
+export const useForgotPassword = () => {
+	return useMutation({
+		mutationFn: async (payload: PasswordResetRequest) => {
+			const response = await api.post<{ message: string }>(
+				"/auth/forgot-password",
+				payload,
+			);
+			return response.data;
+		},
+	});
+};
+
+export const useResetPassword = () => {
+	return useMutation({
+		mutationFn: async (payload: PasswordResetConfirm) => {
+			const response = await api.post<UserResponse>(
+				"/auth/reset-password",
+				payload,
+			);
+			return response.data;
 		},
 	});
 };
@@ -71,32 +121,22 @@ export const useMe = () => {
 	return useQuery({
 		queryKey: ME_KEY,
 		queryFn: async () => {
-			const response = await api.get<Creator>("/auth/me/");
+			const response = await api.get<UserResponse>("/auth/me");
 			return response.data;
 		},
-		retry: false, // don't hammer the server on 401
+		retry: false,
 	});
 };
 
 export const useUpdateMe = () => {
 	const qc = useQueryClient();
 	return useMutation({
-		mutationFn: async (data: Partial<Creator>) => {
-			const response = await api.patch<Creator>("/auth/me/", data);
+		mutationFn: async (data: UserUpdateRequest) => {
+			const response = await api.patch<UserResponse>("/users/me", data);
 			return response.data;
 		},
 		onSuccess: () => {
 			qc.invalidateQueries({ queryKey: ME_KEY });
-		},
-	});
-};
-
-export const useDeactivateAccount = () => {
-	return useMutation({
-		mutationFn: async () => {
-			const refresh = localStorage.getItem("refresh_token");
-			await api.post("/auth/deactivate/", { refresh });
-			clearTokens();
 		},
 	});
 };
@@ -108,8 +148,16 @@ export const useLogout = () => {
 				typeof window !== "undefined"
 					? localStorage.getItem("refresh_token")
 					: null;
+
 			if (refresh) {
-				await api.post("/auth/logout/", { refresh });
+				try {
+					await api.post("/auth/logout", { refresh_token: refresh });
+				} catch (err) {
+					// Silent fail — still clear tokens locally
+					console.warn(
+						"Logout request failed, clearing tokens anyway",
+					);
+				}
 			}
 			clearTokens();
 		},
@@ -121,53 +169,16 @@ export const useLogout = () => {
 	});
 };
 
-export const useAcceptTOS = () => {
+// Optional: Deactivate account
+export const useDeactivateAccount = () => {
 	const qc = useQueryClient();
 	return useMutation({
-		mutationFn: async (accepted: boolean) => {
-			return authService.acceptTOS(accepted);
+		mutationFn: async () => {
+			await api.delete("/users/me");
+			clearTokens();
 		},
 		onSuccess: () => {
-			qc.invalidateQueries({ queryKey: ME_KEY });
-		},
-	});
-};
-
-export const NOTIFICATION_PREFS_KEY = [
-	"auth",
-	"notification-preferences",
-] as const;
-
-export interface NotificationPreferences {
-	email_notifications: boolean;
-	push_notifications: boolean;
-	marketing_emails: boolean;
-}
-
-export const useNotificationPreferences = () => {
-	return useQuery({
-		queryKey: NOTIFICATION_PREFS_KEY,
-		queryFn: async () => {
-			const response = await api.get<NotificationPreferences>(
-				"/auth/notification-preferences/",
-			);
-			return response.data;
-		},
-	});
-};
-
-export const useUpdateNotificationPreferences = () => {
-	const qc = useQueryClient();
-	return useMutation({
-		mutationFn: async (data: Partial<NotificationPreferences>) => {
-			const response = await api.patch<NotificationPreferences>(
-				"/auth/notification-preferences/",
-				data,
-			);
-			return response.data;
-		},
-		onSuccess: () => {
-			qc.invalidateQueries({ queryKey: NOTIFICATION_PREFS_KEY });
+			qc.clear(); // Clear all queries on account deletion
 		},
 	});
 };
