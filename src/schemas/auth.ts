@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const RegisterRequestSchema = z.object({
-	email: z.string().email(),
+	email: z.email(),
 	password: z
 		.string()
 		.min(8)
@@ -16,7 +16,7 @@ export const RegisterRequestSchema = z.object({
 });
 
 export const LoginRequestSchema = z.object({
-	email: z.string().email(),
+	email: z.email(),
 	password: z.string(),
 });
 
@@ -35,7 +35,7 @@ export const VerifyEmailRequestSchema = z.object({
 });
 
 export const PasswordResetRequestSchema = z.object({
-	email: z.string().email(),
+	email: z.email(),
 });
 
 export const PasswordResetConfirmSchema = z.object({

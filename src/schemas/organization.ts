@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { MemberRole, PlanTier } from "./index"; // or directly define enums here if preferred
+import { InvitationStatus, MemberRole, PlanTier } from "./index"; // or directly define enums here if preferred
 
 export const OrgCreateRequestSchema = z.object({
 	name: z.string().min(1),
@@ -8,6 +8,14 @@ export const OrgCreateRequestSchema = z.object({
 export const OrgUpdateRequestSchema = z.object({
 	name: z.string().min(1).optional().nullable(),
 	logo_url: z.url().optional().nullable(),
+});
+
+export const InvitationSchema = z.object({
+	id: z.string(),
+	organization_id: z.string(),
+	email: z.string(),
+	status: z.enum(InvitationStatus),
+	expires_at: z.iso.datetime(),
 });
 
 export const InviteMemberRequestSchema = z.object({
@@ -61,5 +69,6 @@ export type AcceptInvitationRequest = z.infer<
 export type BillingInitSchema = z.infer<typeof BillingInitSchemaSchema>;
 
 export type OrgResponse = z.infer<typeof OrgResponseSchema>;
+export type InvitationResponse = z.infer<typeof InvitationSchema>;
 export type MembershipResponse = z.infer<typeof MembershipResponseSchema>;
 export type BillingVerifyResponse = z.infer<typeof BillingVerifyResponseSchema>;

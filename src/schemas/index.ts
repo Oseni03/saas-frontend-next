@@ -16,6 +16,13 @@ export enum PlanTier {
 	ENTERPRISE = "ENTERPRISE",
 }
 
+export enum InvitationStatus {
+	PENDING = "pending",
+	ACCEPTED = "accepted",
+	EXPIRED = "expired",
+	REVOKED = "revoked",
+}
+
 // ======================
 // Auth Schemas
 // ======================
@@ -35,3 +42,8 @@ export * from "./organization";
 // Notification Schemas
 // ======================
 export * from "./notification";
+
+// ======================
+// Admin Schemas
+// ======================
+export * from "./admin";

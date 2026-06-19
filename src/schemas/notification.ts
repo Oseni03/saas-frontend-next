@@ -6,7 +6,7 @@ export const NotificationResponseSchema = z.object({
 	body: z.string(),
 	link: z.string().url().nullable().optional(),
 	is_read: z.boolean(),
-	read_at: z.string().datetime().nullable().optional(),
+	read_at: z.iso.datetime().nullable().optional(),
 	meta: z.record(z.string(), z.any()).nullable().optional(),
 	created_at: z.string().datetime(),
 });
