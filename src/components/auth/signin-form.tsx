@@ -36,7 +36,7 @@ export default function SignInForm({
             placeholder="e.g. ops@workspace.so"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="h-11 pl-10 bg-background text-xs font-mono rounded-none border-border"
+            className="h-11 pl-10 bg-card text-xs font-mono rounded-none"
           />
           <Mail className="absolute left-3.5 top-3.5 w-4 h-4 text-foreground/40 pointer-events-none" />
         </div>
@@ -68,7 +68,7 @@ export default function SignInForm({
             placeholder="••••••••••••"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="h-11 pl-10 bg-background text-xs font-mono rounded-none border-border"
+            className="h-11 pl-10 bg-card text-xs font-mono rounded-none"
           />
           <Lock className="absolute left-3.5 top-3.5 w-4 h-4 text-foreground/40 pointer-events-none" />
         </div>

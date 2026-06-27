@@ -98,7 +98,7 @@ export default function Footer() {
                 }}
                 className="flex items-center gap-2.5 cursor-pointer hover:opacity-90 transition-opacity"
               >
-                <div className="flex h-9 w-9 items-center justify-center border border-border bg-background text-foreground">
+                <div className="flex h-9 w-9 items-center justify-center bg-muted text-foreground">
                   <Activity className="h-5 w-5" />
                 </div>
                 <span className="font-display text-lg font-bold tracking-tight text-foreground">
@@ -119,7 +119,7 @@ export default function Footer() {
               variant="outline"
               size="icon"
               asChild
-              className="rounded-none border-border/60"
+              className="rounded-none"
             >
               <a href="#">
                 <Twitter className="h-4 w-4" />
@@ -129,7 +129,7 @@ export default function Footer() {
               variant="outline"
               size="icon"
               asChild
-              className="rounded-none border-border/60"
+              className="rounded-none"
             >
               <a href="#">
                 <Github className="h-4 w-4" />
@@ -139,7 +139,7 @@ export default function Footer() {
               variant="outline"
               size="icon"
               asChild
-              className="rounded-none border-border/60"
+              className="rounded-none"
             >
               <a href="#">
                 <Linkedin className="h-4 w-4" />
@@ -149,7 +149,7 @@ export default function Footer() {
               variant="outline"
               size="icon"
               asChild
-              className="rounded-none border-border/60"
+              className="rounded-none"
             >
               <a href="#">
                 <Terminal className="h-4 w-4" />
@@ -169,7 +169,7 @@ export default function Footer() {
                 value={emailValue}
                 onChange={(e) => setEmailValue(e.target.value)}
                 disabled={subscribed}
-                className="rounded-none border-border/60 text-xs h-9"
+                className="rounded-none text-xs h-9"
                 required
                 id="footer-email-input"
               />

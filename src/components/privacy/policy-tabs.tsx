@@ -130,7 +130,7 @@ export default function PolicyTabs() {
               initial={{ opacity: 0, x: 10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.3 }}
-              className="space-y-4 bg-background border border-border p-6 md:p-8"
+              className="space-y-4 bg-card p-6 md:p-8"
               id={`clause-${clause.id}`}
             >
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b pb-4 border-border">

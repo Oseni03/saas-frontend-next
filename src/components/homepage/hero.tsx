@@ -25,7 +25,7 @@ export default function Hero() {
         {/* Master Heading */}
         <h1
           id="hero-heading"
-          className="text-foreground text-4xl md:text-6xl lg:text-7xl font-sans font-bold text-center tracking-tighter leading-[1.05] max-w-4xl"
+          className="text-foreground text-4xl md:text-6xl lg:text-7xl font-display font-bold text-center tracking-tighter leading-[1.05] max-w-4xl"
         >
           Write simple text. Publish to the web instantly.
         </h1>
@@ -74,7 +74,7 @@ export default function Hero() {
         {/* Elegant Minimalist Wireframe Dashboard Mockup */}
         <div
           id="hero-app-mockup"
-          className="w-full max-w-5xl border border-border bg-background flex flex-col font-mono text-xs text-foreground/80 overflow-hidden"
+          className="w-full max-w-5xl bg-muted flex flex-col font-mono text-xs text-foreground/80 overflow-hidden"
         >
           {/* Mock Window Top Bar */}
           <div className="border-b border-border h-12 px-4 flex items-center justify-between bg-foreground/[0.02]">
@@ -88,7 +88,7 @@ export default function Hero() {
             </div>
 
             {/* Mock address bar */}
-            <div className="hidden md:flex items-center gap-1.5 px-3 py-1 bg-background border border-border rounded text-[10px] text-foreground/50 w-72 justify-between">
+            <div className="hidden md:flex items-center gap-1.5 px-3 py-1 bg-background border border-border rounded-none text-[10px] text-foreground/50 w-72 justify-between">
               <span className="truncate">
                 https://index.so/ayomide/notebook
               </span>
@@ -142,7 +142,7 @@ export default function Hero() {
                   </span>
                   <span className="text-primary font-bold">Primary</span>
                 </div>
-                <div className="text-[10px] text-foreground border border-border p-1.5 bg-background truncate font-mono">
+                <div className="text-[10px] text-foreground bg-muted p-1.5 truncate font-mono">
                   index.so/ayomide/notebook
                 </div>
               </div>
@@ -188,7 +188,7 @@ export default function Hero() {
                 <div className="text-foreground/60">
                   Whenever traveling to new spaces, keep these guidelines close:
                 </div>
-                <div className="border border-border p-3 bg-foreground/[0.02] mt-2 flex flex-col gap-1">
+                <div className="bg-muted p-3 mt-2 flex flex-col gap-1">
                   <div>1. Travel light (only one backpack is plenty!)</div>
                   <div>2. Wake up early for the caldera sunrise</div>
                   <div>3. Always order fresh tomatoes and olive oil</div>
@@ -232,7 +232,7 @@ export default function Hero() {
                 </div>
               </div>
 
-              <div className="flex-1 flex flex-col border border-border p-2 bg-background font-mono text-[9px] text-foreground/60 leading-normal overflow-hidden select-none">
+              <div className="flex-1 flex flex-col bg-muted p-2 font-mono text-[9px] text-foreground/60 leading-normal overflow-hidden select-none">
                 <div className="flex items-center gap-1 border-b border-border pb-1 mb-1.5 text-foreground/40 font-bold">
                   <Terminal className="w-2.5 h-2.5" />
                   <span>PUBLISHING LOGS</span>

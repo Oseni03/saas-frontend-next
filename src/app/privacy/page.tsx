@@ -15,7 +15,7 @@ export default function PrivacyPage() {
       id="privacy-page"
     >
       <div className="text-center space-y-4 max-w-2xl mx-auto">
-        <div className="flex h-11 w-11 mx-auto items-center justify-center border border-border bg-foreground/[0.02] text-primary">
+        <div className="flex h-11 w-11 mx-auto items-center justify-center bg-muted text-primary">
           <ShieldCheck className="h-6 w-6" />
         </div>
         <h1 className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl text-foreground">

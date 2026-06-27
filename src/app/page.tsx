@@ -8,7 +8,6 @@ import SocialProof from "@/components/homepage/social-proof";
 import Features from "@/components/homepage/features";
 import Pricing from "@/components/homepage/pricing";
 import Footer from "@/components/homepage/footer";
-import ThemeControl from "@/components/theme-control";
 
 export default function HomePage() {
   return (
@@ -31,7 +30,6 @@ export default function HomePage() {
       </motion.main>
 
       <Footer />
-      <ThemeControl />
     </div>
   );
 }

@@ -65,7 +65,7 @@ export default function Features() {
           <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary font-bold">
             01 / CORE PUBLISHING ADVANTAGES
           </span>
-          <h2 className="text-foreground text-3xl md:text-5xl font-sans font-bold tracking-tighter mt-4 leading-tight">
+          <h2 className="text-foreground text-3xl md:text-5xl font-display font-bold tracking-tighter mt-4 leading-tight">
             Designed for writers and creators who prioritize clarity, speed, and
             beautiful design.
           </h2>
@@ -77,7 +77,7 @@ export default function Features() {
         {/* Feature Grid */}
         <div
           id="features-grid"
-          className="grid grid-cols-1 md:grid-cols-3 border border-border"
+          className="grid grid-cols-1 md:grid-cols-3 bg-muted"
         >
           {FEATURES.map((feature, idx) => (
             <div
@@ -92,7 +92,7 @@ export default function Features() {
                   <span className="text-[10px] font-mono text-foreground/40 font-bold">
                     [{feature.tag}]
                   </span>
-                  <div className="p-2 border border-border bg-background group-hover:border-primary transition-colors">
+                  <div className="p-2 bg-card group-hover:bg-muted transition-colors">
                     {FEATURE_ICONS[idx]}
                   </div>
                 </div>
@@ -104,7 +104,7 @@ export default function Features() {
                   >
                     {feature.category}
                   </Badge>
-                  <h3 className="text-foreground text-xl font-sans font-bold tracking-tight">
+                  <h3 className="text-foreground text-xl font-display font-bold tracking-tight">
                     {feature.title}
                   </h3>
                 </div>
@@ -131,12 +131,12 @@ export default function Features() {
         {/* Speed Test Footer */}
         <div
           id="features-specification-footer"
-          className="mt-16 border border-border p-6 flex flex-col md:flex-row items-center justify-between gap-6 bg-foreground/[0.01]"
+          className="mt-16 bg-muted p-6 flex flex-col md:flex-row items-center justify-between gap-6"
         >
           <div className="flex items-center gap-3">
             <span className="w-2.5 h-2.5 rounded-full bg-primary" />
             <div className="text-xs font-mono text-foreground/70">
-              <span className="text-foreground font-bold font-sans block md:inline">
+              <span className="text-foreground font-bold font-display block md:inline">
                 Speed & reliability:
               </span>{" "}
               {testResult ? (

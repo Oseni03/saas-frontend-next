@@ -39,7 +39,7 @@ export default function ResetPasswordForm({
             placeholder="e.g. 5F832A"
             value={verificationCode}
             onChange={(e) => setVerificationCode(e.target.value)}
-            className="h-11 pl-10 bg-background text-xs font-mono rounded-none border-border uppercase"
+            className="h-11 pl-10 bg-card text-xs font-mono rounded-none uppercase"
           />
           <Key className="absolute left-3.5 top-3.5 w-4 h-4 text-foreground/40 pointer-events-none" />
         </div>
@@ -60,7 +60,7 @@ export default function ResetPasswordForm({
             placeholder="••••••••••••"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="h-11 pl-10 bg-background text-xs font-mono rounded-none border-border"
+            className="h-11 pl-10 bg-card text-xs font-mono rounded-none"
           />
           <Lock className="absolute left-3.5 top-3.5 w-4 h-4 text-foreground/40 pointer-events-none" />
         </div>
@@ -81,7 +81,7 @@ export default function ResetPasswordForm({
             placeholder="••••••••••••"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            className="h-11 pl-10 bg-background text-xs font-mono rounded-none border-border"
+            className="h-11 pl-10 bg-card text-xs font-mono rounded-none"
           />
           <Lock className="absolute left-3.5 top-3.5 w-4 h-4 text-foreground/40 pointer-events-none" />
         </div>

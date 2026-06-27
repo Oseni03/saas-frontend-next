@@ -93,7 +93,7 @@ export default function Pricing() {
           <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary font-bold">
             02 / CHOOSE YOUR STUDY
           </span>
-          <h2 className="text-foreground text-3xl md:text-5xl font-sans font-bold tracking-tighter mt-4 leading-tight max-w-2xl">
+          <h2 className="text-foreground text-3xl md:text-5xl font-display font-bold tracking-tighter mt-4 leading-tight max-w-2xl">
             Transparent plans with zero hidden fees.
           </h2>
           <p className="text-foreground/70 text-sm mt-4 max-w-lg font-sans">
@@ -102,7 +102,7 @@ export default function Pricing() {
           </p>
 
           {/* Billing Toggle */}
-          <div className="flex items-center gap-3 mt-10 p-1 border border-border bg-background select-none">
+          <div className="flex items-center gap-3 mt-10 p-1 bg-card select-none">
             <Button
               id="billing-monthly-btn"
               variant={!isAnnual ? "default" : "outline"}
@@ -143,8 +143,8 @@ export default function Pricing() {
               <Card
                 key={plan.id}
                 id={`pricing-card-${plan.id}`}
-                className={`flex flex-col justify-between p-8 md:p-10 bg-background border transition-all relative ${
-                  isActiveState ? "border-primary" : "border-border"
+                className={`flex flex-col justify-between p-8 md:p-10 transition-all relative ${
+                  isActiveState ? "bg-muted" : "bg-card"
                 } rounded-none shadow-none`}
               >
                 {isActiveState && (
@@ -169,8 +169,8 @@ export default function Pricing() {
                 </CardHeader>
 
                 <CardContent className="px-0">
-                  <div className="flex items-baseline gap-1 bg-foreground/[0.01] p-3 border border-border/40 font-mono">
-                    <span className="text-foreground text-3xl md:text-4xl font-sans font-bold tracking-tight">
+                  <div className="flex items-baseline gap-1 bg-muted p-3 font-mono">
+                    <span className="text-foreground text-3xl md:text-4xl font-display font-bold tracking-tight">
                       ${price}
                     </span>
                     <span className="text-xs text-foreground/60 font-mono">
@@ -196,7 +196,7 @@ export default function Pricing() {
                     <ul className="flex flex-col gap-3 font-sans text-xs text-foreground/80">
                       {plan.features.map((feat, idx) => (
                         <li key={idx} className="flex items-start gap-2.5">
-                          <span className="w-4 h-4 border border-border mt-0.5 flex items-center justify-center text-[10px] font-mono font-bold shrink-0 text-primary">
+                          <span className="w-4 h-4 bg-muted mt-0.5 flex items-center justify-center text-[10px] font-mono font-bold shrink-0 text-primary">
                             +
                           </span>
                           <span>{feat}</span>

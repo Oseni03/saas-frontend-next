@@ -40,7 +40,7 @@ export default function AboutPage() {
       <div className="text-center space-y-4 max-w-2xl mx-auto relative z-10">
         <Badge
           variant="outline"
-          className="rounded-full px-3.5 py-1 text-xs font-semibold border-border"
+          className="rounded-none px-3.5 py-1 text-xs font-semibold"
         >
           Our Story
         </Badge>
@@ -80,11 +80,8 @@ export default function AboutPage() {
           {teamIdeals.map((ideal, idx) => {
             const Icon = ideal.icon;
             return (
-              <div
-                key={idx}
-                className="flex gap-4 p-4 border border-border bg-background/40 rounded-none backdrop-blur-sm"
-              >
-                <div className="flex h-10 w-10 items-center justify-center rounded-none border border-border/50 bg-foreground/[0.02] shrink-0 select-none">
+              <div key={idx} className="flex gap-4 p-4 bg-muted rounded-none">
+                <div className="flex h-10 w-10 items-center justify-center rounded-none bg-card shrink-0 select-none">
                   <Icon className="h-5 w-5 text-primary" />
                 </div>
                 <div>
@@ -101,7 +98,7 @@ export default function AboutPage() {
         </div>
       </div>
 
-      <div className="border border-border bg-foreground/[0.02] p-8 text-center space-y-6 md:p-12 relative z-10">
+      <div className="bg-muted p-8 text-center space-y-6 md:p-12 relative z-10">
         <h3 className="font-display text-2xl font-bold text-foreground">
           Start publishing beautiful pages today.
         </h3>

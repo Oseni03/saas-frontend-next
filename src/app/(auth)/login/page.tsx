@@ -45,7 +45,7 @@ export default function LoginPage() {
           Back to Home
         </Link>
 
-        <div className="bg-background border border-border p-8 md:p-10">
+        <div className="bg-muted p-8 md:p-10">
           <div className="flex items-center gap-1.5 select-none text-[10px] font-mono text-primary font-bold uppercase tracking-wider mb-6">
             <span className="w-2.5 h-2.5 border border-primary flex items-center justify-center text-[7px]">
               I
@@ -53,7 +53,7 @@ export default function LoginPage() {
             <span>Index Identity Proxy // Node-v6</span>
           </div>
 
-          <h1 className="text-foreground text-2xl md:text-3xl font-sans font-bold tracking-tight">
+          <h1 className="text-foreground text-2xl md:text-3xl font-display font-bold tracking-tight">
             Sign In
           </h1>
           <p className="text-foreground/60 text-xs font-mono uppercase mt-1 mb-8">

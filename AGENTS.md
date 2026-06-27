@@ -1,4 +1,4 @@
-# AGENTS.md — Opticast frontend
+# AGENTS.md — frontend
 
 Single Next.js app at root (no monorepo). Source lives in `src/`, not `frontend/`.
 

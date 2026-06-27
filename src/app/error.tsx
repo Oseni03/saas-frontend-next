@@ -21,7 +21,7 @@ export default function RootError({
             !
           </span>
         </div>
-        <h1 className="text-2xl font-bold text-foreground font-sans tracking-tight">
+        <h1 className="text-2xl font-bold text-foreground font-display tracking-tight">
           Something went wrong
         </h1>
         <p className="text-sm text-muted-foreground leading-relaxed">

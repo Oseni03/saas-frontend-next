@@ -42,8 +42,7 @@ export function middleware(request: NextRequest) {
 export const config = {
   // Run middleware on projects, onboarding, and all /auth/* routes
   matcher: [
-    "/projects/:path*",
-    "/onboarding/:path*",
+    "/dashboard/:path*",
     "/login",
     "/signup",
     "/forgot-password",

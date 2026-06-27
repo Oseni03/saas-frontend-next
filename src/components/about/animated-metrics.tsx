@@ -19,7 +19,7 @@ export default function AnimatedMetrics() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.35, delay: idx * 0.05 }}
-          className="border border-border bg-foreground/[0.02] p-6 text-center"
+          className="bg-card p-6 text-center"
         >
           <p className="text-3xl font-extrabold font-display text-foreground">
             {metric.value}

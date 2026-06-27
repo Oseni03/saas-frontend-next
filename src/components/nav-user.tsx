@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import {
   BadgeCheck,
   Bell,
@@ -26,121 +25,90 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { useMe, clearTokens } from "@/hooks/useAuth";
-import { useRouter } from "next/navigation";
 
-export function NavUser() {
-  const { isMobile } = useSidebar();
-  const { data: user } = useMe();
-  const router = useRouter();
-
-  const displayName = user?.username || user?.email || "Creator";
-  const displayEmail = user?.email || "";
-  const fallbackInitials = displayName
-    .split(" ")
-    .map((part) => part[0])
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
-
-  const handleLogout = () => {
-    clearTokens();
-    router.push("/login");
+export function NavUser({
+  user,
+}: {
+  user: {
+    name: string;
+    email: string;
+    avatar: string;
   };
+}) {
+  const { isMobile } = useSidebar();
 
   return (
     <SidebarMenu>
       <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-            >
-              <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage
-                  src={user?.avatar_url || undefined}
-                  alt={user?.username}
-                />
-                <AvatarFallback className="rounded-lg">
-                  {fallbackInitials || "CN"}
+            <SidebarMenuButton size="lg" className="data-[state=open]:bg-card">
+              <Avatar className="h-8 w-8">
+                <AvatarImage src={user.avatar} alt={user.name} />
+                <AvatarFallback className="bg-card text-foreground text-[10px] font-mono uppercase">
+                  AR
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{displayName}</span>
-                <span className="truncate text-xs">{displayEmail}</span>
+                <span className="truncate text-xs font-mono uppercase tracking-widest text-foreground/70">
+                  {user.name}
+                </span>
+                <span className="truncate text-[10px] font-mono text-foreground/40">
+                  {user.email}
+                </span>
               </div>
-              <ChevronsUpDown className="ml-auto size-4" />
+              <ChevronsUpDown className="ml-auto size-3 text-foreground/30" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 bg-card"
             side={isMobile ? "bottom" : "right"}
             align="end"
             sideOffset={4}
           >
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage
-                    src={user?.avatar_url || undefined}
-                    alt={displayName}
-                  />
-                  <AvatarFallback className="rounded-lg">
-                    {fallbackInitials || "CN"}
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src={user.avatar} alt={user.name} />
+                  <AvatarFallback className="bg-card text-foreground text-[10px] font-mono uppercase">
+                    AR
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{displayName}</span>
-                  <span className="truncate text-xs">{displayEmail}</span>
+                  <span className="truncate text-xs font-mono uppercase tracking-widest text-foreground/70">
+                    {user.name}
+                  </span>
+                  <span className="truncate text-[10px] font-mono text-foreground/40">
+                    {user.email}
+                  </span>
                 </div>
               </div>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator className="bg-muted" />
             <DropdownMenuGroup>
-              <DropdownMenuItem asChild>
-                <Link
-                  href="/projects/settings#billing"
-                  className="flex items-center gap-2"
-                >
-                  <Sparkles />
-                  Upgrade to Pro
-                </Link>
+              <DropdownMenuItem className="text-xs font-mono uppercase tracking-widest text-foreground/70 data-[highlighted]:bg-muted data-[highlighted]:text-foreground">
+                <Sparkles className="size-3.5" />
+                Upgrade to Pro
               </DropdownMenuItem>
             </DropdownMenuGroup>
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator className="bg-muted" />
             <DropdownMenuGroup>
-              <DropdownMenuItem asChild>
-                <Link
-                  href="/projects/settings"
-                  className="flex items-center gap-2"
-                >
-                  <BadgeCheck />
-                  Account
-                </Link>
+              <DropdownMenuItem className="text-xs font-mono uppercase tracking-widest text-foreground/70 data-[highlighted]:bg-muted data-[highlighted]:text-foreground">
+                <BadgeCheck className="size-3.5" />
+                Account
               </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link
-                  href="/projects/settings#billing"
-                  className="flex items-center gap-2"
-                >
-                  <CreditCard />
-                  Billing
-                </Link>
+              <DropdownMenuItem className="text-xs font-mono uppercase tracking-widest text-foreground/70 data-[highlighted]:bg-muted data-[highlighted]:text-foreground">
+                <CreditCard className="size-3.5" />
+                Billing
               </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link
-                  href="/projects/settings#notifications"
-                  className="flex items-center gap-2"
-                >
-                  <Bell />
-                  Notifications
-                </Link>
+              <DropdownMenuItem className="text-xs font-mono uppercase tracking-widest text-foreground/70 data-[highlighted]:bg-muted data-[highlighted]:text-foreground">
+                <Bell className="size-3.5" />
+                Notifications
               </DropdownMenuItem>
             </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onSelect={handleLogout}>
-              <LogOut />
+            <DropdownMenuSeparator className="bg-muted" />
+            <DropdownMenuItem className="text-xs font-mono uppercase tracking-widest text-foreground/70 data-[highlighted]:bg-muted data-[highlighted]:text-foreground">
+              <LogOut className="size-3.5" />
               Log out
             </DropdownMenuItem>
           </DropdownMenuContent>
