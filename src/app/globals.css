@@ -55,7 +55,7 @@
   --color-surface-container-highest: var(--surface-container-highest);
   --color-inverse-surface: var(--inverse-surface);
   --color-inverse-on-surface: var(--inverse-on-surface);
-  
+
   --color-primary-container: var(--primary-container);
   --color-on-primary-container: var(--on-primary-container);
   --color-secondary-container: var(--secondary-container);
@@ -94,7 +94,7 @@
   --border: #c6c6cd;
   --input: #e0e3e5;
   --ring: #9466ff;
-  
+
   --surface: #f7f9fb;
   --surface-bright: #f7f9fb;
   --surface-dim: #d8dadc;

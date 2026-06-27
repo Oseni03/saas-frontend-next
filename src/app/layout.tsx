@@ -1,38 +1,48 @@
-import QueryProvider from "@/components/providers/QueryProvider";
-import type { Metadata } from "next";
-import { Manrope, Inter } from "next/font/google";
 import "./globals.css";
+import QueryProvider from "@/components/providers/QueryProvider";
+import type { Metadata, Viewport } from "next";
+import { Manrope, Inter } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
+import { ThemeProvider } from "@/contexts/theme-control";
 
 const manrope = Manrope({
-	variable: "--font-manrope",
-	subsets: ["latin"],
+  variable: "--font-manrope",
+  subsets: ["latin"],
 });
 
 const inter = Inter({
-	variable: "--font-inter",
-	subsets: ["latin"],
+  variable: "--font-inter",
+  subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-	title: "Opticast — Turn Your YouTube Into a Podcast",
-	description:
-		"Automatically convert your YouTube uploads into high-quality podcast episodes and distribute them to Spotify, Apple, and Google.",
+  title: "Opticast — Turn Your YouTube Into a Podcast",
+  description:
+    "Automatically convert your YouTube uploads into high-quality podcast episodes and distribute them to Spotify, Apple, and Google.",
+};
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f7f9fb" },
+    { media: "(prefers-color-scheme: dark)", color: "#191c1e" },
+  ],
 };
 
 export default function RootLayout({
-	children,
+  children,
 }: Readonly<{
-	children: React.ReactNode;
+  children: React.ReactNode;
 }>) {
-	return (
-		<html lang="en">
-			<body
-				className={`${manrope.variable} ${inter.variable} font-sans antialiased`}
-			>
-				<QueryProvider>{children}</QueryProvider>
-				<Toaster />
-			</body>
-		</html>
-	);
+  return (
+    <html lang="en">
+      <body
+        className={`${manrope.variable} ${inter.variable} font-sans antialiased`}
+      >
+        <ThemeProvider>
+          <QueryProvider>{children}</QueryProvider>
+        </ThemeProvider>
+        <Toaster />
+      </body>
+    </html>
+  );
 }
