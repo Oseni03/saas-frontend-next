@@ -19,11 +19,13 @@ import {
 	useSidebar,
 } from "@/components/ui/sidebar";
 import { useOrganization } from "@/contexts/organization";
+import { CreateOrganizationModal } from "@/components/create-organization-modal";
 
 export function OrgSwitcher() {
 	const { isMobile } = useSidebar();
 	const { organizations, activeOrg, setActiveOrg, isLoading } =
 		useOrganization();
+	const [showCreateModal, setShowCreateModal] = React.useState(false);
 
 	if (isLoading || !activeOrg) {
 		return (
@@ -100,7 +102,10 @@ export function OrgSwitcher() {
 							</DropdownMenuItem>
 						))}
 						<DropdownMenuSeparator className="bg-muted" />
-						<DropdownMenuItem className="gap-2 p-2 text-xs font-mono uppercase tracking-widest text-foreground/50 data-[highlighted]:bg-muted data-[highlighted]:text-foreground">
+						<DropdownMenuItem
+							onClick={() => setShowCreateModal(true)}
+							className="gap-2 p-2 text-xs font-mono uppercase tracking-widest text-foreground/50 data-[highlighted]:bg-muted data-[highlighted]:text-foreground"
+						>
 							<div className="flex size-6 items-center justify-center bg-muted">
 								<Plus className="size-3" />
 							</div>
@@ -108,6 +113,10 @@ export function OrgSwitcher() {
 						</DropdownMenuItem>
 					</DropdownMenuContent>
 				</DropdownMenu>
+				<CreateOrganizationModal
+					open={showCreateModal}
+					onOpenChange={setShowCreateModal}
+				/>
 			</SidebarMenuItem>
 		</SidebarMenu>
 	);
