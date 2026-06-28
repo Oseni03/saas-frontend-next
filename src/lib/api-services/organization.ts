@@ -133,6 +133,24 @@ export const organizationService = {
   },
 
   /**
+   * Revoke a pending invitation
+   */
+  revokeInvitation: async (
+    orgId: string,
+    invitationId: string,
+  ): Promise<{ message: string }> => {
+    const res = await api.delete<any>(
+      `/organizations/${orgId}/invitations/${invitationId}`,
+    );
+
+    return snakeCaseSchema(
+      z.object({
+        message: z.string(),
+      }),
+    ).parse(res.data);
+  },
+
+  /**
    * Accept an invitation (public endpoint)
    */
   acceptInvitation: async (

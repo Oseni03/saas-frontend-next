@@ -51,6 +51,9 @@ export const MembershipResponseSchema = z.object({
   organization_id: z.string(),
   role: z.enum(MemberRole),
   created_at: z.string().datetime(),
+  name: z.string().optional(),
+  email: z.string().optional(),
+  avatar_url: z.string().nullable().optional(),
 });
 
 export const BillingVerifyResponseSchema = z.object({
