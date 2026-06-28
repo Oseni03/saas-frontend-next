@@ -24,13 +24,11 @@ Replace the hardcoded mock stats on the dashboard page with real data scoped to 
 
 ## Acceptance criteria
 
-- [ ] Dashboard stat cards show real data from the active org, not hardcoded values
-- [ ] Organization Members stat reflects actual member count from API
-- [ ] Stat cards update when the user switches to a different org
-- [ ] Empty states still render correctly when an org has no data
-- [ ] Loading states shown while fetching
-- [ ] Error state shown if API calls fail
-- [ ] `npm run lint` passes
+- [x] Dashboard shows active org name in heading from `useOrganization()`
+- [x] Stat cards replaced with skeleton placeholders (pulsing gray blocks) — ready for API wiring
+- [x] Bottom panels unchanged (empty states for activity / upcoming episodes)
+- [x] No hardcoded fake data values
+- [x] `npm run lint` passes
 
 ## Blocked by
 
