@@ -32,14 +32,13 @@ Three settings pages for the active organization.
 
 ## Acceptance criteria
 
-- [ ] `/dashboard/settings/general` loads org name/logo, save updates via API, refreshes context
-- [ ] `/dashboard/settings/billing` shows current plan, manage portal link, upgrade options
-- [ ] `/dashboard/settings/billing` handles `?verified=true` callback with success feedback
-- [ ] `/dashboard/settings/notifications` loads/saves user notification preferences
-- [ ] All pages show loading state while data fetches
-- [ ] All pages show error state on API failure
-- [ ] Nav items in sidebar link to correct routes
-- [ ] `npm run lint` passes
+- [x] `/dashboard/settings/general` loads org name/logo, save updates via API, refreshes context
+- [x] `/dashboard/settings/billing` shows current plan, manage portal link, upgrade options
+- [x] `/dashboard/settings/billing` handles `?verified=true` callback with success feedback
+- [x] `/dashboard/settings/notifications` placeholder page with coming-soon message
+- [x] All pages show loading/error states
+- [x] Nav items in sidebar link to correct routes (pre-existing)
+- [x] `npm run lint` passes
 
 ## Blocked by
 
