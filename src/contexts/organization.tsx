@@ -6,7 +6,7 @@ import { organizationService } from "@/lib/api-services";
 import type { OrgResponse } from "@/schemas";
 
 export const ORGANIZATIONS_KEY = ["organizations"] as const;
-const ACTIVE_ORG_STORAGE_KEY = "active_organization_id";
+export const ACTIVE_ORG_STORAGE_KEY = "active_organization_id";
 
 interface OrganizationContextValue {
   organizations: OrgResponse[];

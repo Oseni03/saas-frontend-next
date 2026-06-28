@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import SignInForm from "@/components/auth/signin-form";
@@ -9,7 +9,17 @@ import { useLogin } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 
 export default function LoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginContent />
+    </Suspense>
+  );
+}
+
+function LoginContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect") || "/dashboard";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [formError, setFormError] = useState<string | null>(null);
@@ -22,7 +32,7 @@ export default function LoginPage() {
     loginMutation.mutate(
       { email, password },
       {
-        onSuccess: () => router.push("/dashboard"),
+        onSuccess: () => router.push(redirectTo),
         onError: (error: any) => {
           setFormError(
             error?.response?.data?.error ||

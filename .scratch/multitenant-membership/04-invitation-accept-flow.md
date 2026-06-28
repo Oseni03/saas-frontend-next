@@ -26,13 +26,13 @@ Handle the invitation acceptance flow when a user clicks an invite link from ema
 
 ## Acceptance criteria
 
-- [ ] `/invitations/accept` route exists and is protected by middleware
-- [ ] Reads `token` from URL query params
-- [ ] Calls `acceptInvitation` on mount
-- [ ] On success: invalidates org cache, sets active org, redirects to `/dashboard`
-- [ ] On error: shows appropriate error message with fallback link
-- [ ] Redirect preserves token in the login redirect URL
-- [ ] `npm run lint` passes
+- [x] `/invitations/accept` route exists and is protected by middleware
+- [x] Reads `token` from URL query params
+- [x] Calls `acceptInvitation` on mount
+- [x] On success: invalidates org cache, sets active org, redirects to `/dashboard`
+- [x] On error: shows appropriate error message with fallback link
+- [x] Redirect preserves token in the login redirect URL
+- [x] `npm run lint` passes
 
 ## Blocked by
 
