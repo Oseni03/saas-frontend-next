@@ -22,7 +22,7 @@ export default function LoginPage() {
     loginMutation.mutate(
       { email, password },
       {
-        onSuccess: () => router.push("/projects"),
+        onSuccess: () => router.push("/dashboard"),
         onError: (error: any) => {
           setFormError(
             error?.response?.data?.error ||

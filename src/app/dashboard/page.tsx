@@ -25,7 +25,7 @@ const stats = [
     trend: "+12% vs last month",
   },
   {
-    title: "Team Members",
+    title: "Organization Members",
     value: "5",
     description: "Across organizations",
     icon: Users,

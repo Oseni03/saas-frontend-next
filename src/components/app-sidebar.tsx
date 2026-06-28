@@ -1,18 +1,11 @@
 "use client";
 
 import * as React from "react";
-import {
-  AudioWaveform,
-  Command,
-  GalleryVerticalEnd,
-  Radio,
-  Settings2,
-  SquareTerminal,
-} from "lucide-react";
+import { Radio, Settings2, SquareTerminal } from "lucide-react";
 
 import { NavMain } from "./nav-main";
 import { NavUser } from "@/components/nav-user";
-import { TeamSwitcher } from "@/components/team-switcher";
+import { OrgSwitcher } from "@/components/org-switcher";
 import {
   Sidebar,
   SidebarContent,
@@ -27,23 +20,6 @@ const data = {
     email: "alex@example.com",
     avatar: "",
   },
-  teams: [
-    {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
-  ],
   navMain: [
     {
       title: "Dashboard",
@@ -56,9 +32,10 @@ const data = {
       url: "#",
       icon: Settings2,
       items: [
-        { title: "General", url: "#" },
-        { title: "Billing", url: "#" },
-        { title: "Notifications", url: "#" },
+        { title: "General", url: "/dashboard/settings/general" },
+        { title: "Members", url: "/dashboard/settings/members" },
+        { title: "Billing", url: "/dashboard/settings/billing" },
+        { title: "Notifications", url: "/dashboard/settings/notifications" },
       ],
     },
   ],
@@ -68,7 +45,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" className="bg-muted border-r-0" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <OrgSwitcher />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
