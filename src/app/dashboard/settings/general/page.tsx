@@ -37,11 +37,7 @@ export default function GeneralPage() {
 			setActiveOrg(updatedOrg);
 			queryClient.invalidateQueries({ queryKey: ORGANIZATIONS_KEY });
 		},
-		onError: (err: any) => {
-			toast.error(
-				err?.response?.data?.error || "Failed to update organization",
-			);
-		},
+		onError: () => {},
 	});
 
 	if (!orgId) {

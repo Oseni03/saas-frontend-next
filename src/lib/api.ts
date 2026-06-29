@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toast } from "sonner";
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api",
@@ -27,7 +28,6 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    // Handle global errors, e.g., token refresh logic could go here
     if (error.response?.status === 401) {
       if (typeof window !== "undefined") {
         localStorage.removeItem("access_token");
@@ -40,6 +40,13 @@ api.interceptors.response.use(
           window.location.href = "/login";
         }
       }
+    } else if (typeof window !== "undefined") {
+      const message =
+        error.response?.data?.error ||
+        error.response?.data?.detail ||
+        error.message ||
+        "An unexpected error occurred";
+      toast.error(message);
     }
     return Promise.reject(error);
   },

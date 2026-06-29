@@ -84,9 +84,7 @@ export default function BillingPage() {
 					url.searchParams.delete("verified");
 					window.history.replaceState({}, "", url.toString());
 				})
-				.catch(() => {
-					toast.error("Payment verification failed");
-				});
+				.catch(() => {});
 		}
 	}, []);
 
@@ -95,12 +93,7 @@ export default function BillingPage() {
 		onSuccess: (data) => {
 			window.location.href = data.manage_url;
 		},
-		onError: (err: any) => {
-			toast.error(
-				err?.response?.data?.error ||
-					"Failed to open subscription management",
-			);
-		},
+		onError: () => {},
 	});
 
 	const upgradeMutation = useMutation({
@@ -112,11 +105,7 @@ export default function BillingPage() {
 		onSuccess: (data) => {
 			window.location.href = data.authorization_url;
 		},
-		onError: (err: any) => {
-			toast.error(
-				err?.response?.data?.error || "Failed to start upgrade",
-			);
-		},
+		onError: () => {},
 	});
 
 	if (!orgId) {

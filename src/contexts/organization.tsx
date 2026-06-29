@@ -13,6 +13,7 @@ interface OrganizationContextValue {
   activeOrg: OrgResponse | null;
   setActiveOrg: (org: OrgResponse) => void;
   isLoading: boolean;
+  isFetched: boolean;
 }
 
 const OrganizationContext = createContext<OrganizationContextValue | undefined>(
@@ -27,7 +28,7 @@ export function OrganizationProvider({
   const [activeOrgId, setActiveOrgId] = useState<string | null>(null);
   const initialized = useRef(false);
 
-  const { data: organizations = [], isLoading } = useQuery({
+  const { data: organizations = [], isLoading, isFetched } = useQuery({
     queryKey: ORGANIZATIONS_KEY,
     queryFn: () => organizationService.list(),
     staleTime: 1000 * 60 * 5,
@@ -57,7 +58,7 @@ export function OrganizationProvider({
 
   return (
     <OrganizationContext.Provider
-      value={{ organizations, activeOrg, setActiveOrg, isLoading }}
+      value={{ organizations, activeOrg, setActiveOrg, isLoading, isFetched }}
     >
       {children}
     </OrganizationContext.Provider>

@@ -187,11 +187,7 @@ export default function MembersPage() {
 				queryKey: [...MEMBERS_KEY, orgId],
 			});
 		},
-		onError: (err: any) => {
-			toast.error(
-				err?.response?.data?.error || "Failed to remove member",
-			);
-		},
+		onError: () => {},
 	});
 
 	const roleMutation = useMutation({
@@ -203,9 +199,7 @@ export default function MembersPage() {
 				queryKey: [...MEMBERS_KEY, orgId],
 			});
 		},
-		onError: (err: any) => {
-			toast.error(err?.response?.data?.error || "Failed to update role");
-		},
+		onError: () => {},
 	});
 
 	const revokeMutation = useMutation({
@@ -217,11 +211,7 @@ export default function MembersPage() {
 				queryKey: [...INVITATIONS_KEY, orgId],
 			});
 		},
-		onError: (err: any) => {
-			toast.error(
-				err?.response?.data?.error || "Failed to revoke invitation",
-			);
-		},
+		onError: () => {},
 	});
 
 	if (!orgId) {
