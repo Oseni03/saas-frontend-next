@@ -2,12 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 // Routes that require authentication
-const PROTECTED_PREFIXES = [
-  "/dashboard",
-  "/projects",
-  "/onboarding",
-  "/invitations",
-];
+const PROTECTED_PREFIXES = ["/dashboard", "/onboarding", "/invitations"];
 
 // Routes accessible only to unauthenticated users
 const AUTH_ROUTES = [
@@ -51,6 +46,7 @@ export const config = {
   matcher: [
     "/dashboard/:path*",
     "/invitations/:path*",
+    "/onboarding/:path*",
     "/login",
     "/signup",
     "/forgot-password",

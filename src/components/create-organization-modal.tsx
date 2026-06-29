@@ -39,7 +39,7 @@ export function CreateOrganizationModal({
 
 	const mutation = useMutation({
 		mutationFn: async () => {
-			const org = await organizationService.create({ name, plan });
+			const org = await organizationService.create({ name });
 
 			if (plan !== "FREE") {
 				const callbackUrl = `${window.location.origin}/dashboard/settings/billing?verified=true`;
