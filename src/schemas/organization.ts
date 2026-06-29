@@ -1,9 +1,8 @@
 import { z } from "zod";
-import { InvitationStatus, MemberRole, PlanTier } from "./index"; // or directly define enums here if preferred
+import { InvitationStatus, MemberRole, PlanTier } from "./enums";
 
 export const OrgCreateRequestSchema = z.object({
   name: z.string().min(1),
-  plan: z.enum(PlanTier),
 });
 
 export const OrgUpdateRequestSchema = z.object({
