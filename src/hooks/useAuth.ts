@@ -2,13 +2,13 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { authService } from "@/lib/auth";
 import type {
-    LoginRequest,
-    RegisterRequest,
-    VerifyEmailRequest,
-    PasswordResetRequest,
-    PasswordResetConfirm,
-    UserResponse,
-    TokenPair,
+	LoginRequest,
+	RegisterRequest,
+	VerifyEmailRequest,
+	PasswordResetRequest,
+	PasswordResetConfirm,
+	UserResponse,
+	TokenPair,
 } from "@/schemas";
 import type { AuthError } from "@/lib/auth";
 import type { SignupResponse } from "@/lib/auth";
@@ -16,67 +16,67 @@ import type { SignupResponse } from "@/lib/auth";
 export const ME_KEY = ["auth", "me"] as const;
 
 export function useLogin() {
-    return useMutation<TokenPair, AuthError, LoginRequest>({
-        mutationFn: (data: LoginRequest) => authService.login(data),
-    });
+	return useMutation<TokenPair, AuthError, LoginRequest>({
+		mutationFn: (data: LoginRequest) => authService.login(data),
+	});
 }
 
 export function useSignup() {
-    return useMutation<SignupResponse, AuthError, RegisterRequest>({
-        mutationFn: (data: RegisterRequest) => authService.register(data),
-    });
+	return useMutation<SignupResponse, AuthError, RegisterRequest>({
+		mutationFn: (data: RegisterRequest) => authService.register(data),
+	});
 }
 
 export function useRefreshToken() {
-    return useMutation<TokenPair, AuthError, { refresh_token: string }>({
-        mutationFn: (data: { refresh_token: string }) =>
-            authService.refresh(data),
-    });
+	return useMutation<TokenPair, AuthError, { refresh_token: string }>({
+		mutationFn: (data: { refresh_token: string }) =>
+			authService.refresh(data),
+	});
 }
 
 export function useLogout() {
-    return useMutation<void, AuthError, void>({
-        mutationFn: () => authService.logout(),
-        onSuccess: () => {
-            if (typeof window !== "undefined") {
-                window.location.href = "/login";
-            }
-        },
-    });
+	return useMutation<void, AuthError, void>({
+		mutationFn: () => authService.logout(),
+		onSuccess: () => {
+			if (typeof window !== "undefined") {
+				window.location.href = "/login";
+			}
+		},
+	});
 }
 
 export function useVerifyEmail() {
-    return useMutation<UserResponse, AuthError, VerifyEmailRequest>({
-        mutationFn: (data: VerifyEmailRequest) => authService.verifyEmail(data),
-    });
+	return useMutation<UserResponse, AuthError, VerifyEmailRequest>({
+		mutationFn: (data: VerifyEmailRequest) => authService.verifyEmail(data),
+	});
 }
 
 export function useForgotPassword() {
-    return useMutation<{ message: string }, AuthError, PasswordResetRequest>({
-        mutationFn: (data: PasswordResetRequest) =>
-            authService.forgotPassword(data),
-    });
+	return useMutation<{ message: string }, AuthError, PasswordResetRequest>({
+		mutationFn: (data: PasswordResetRequest) =>
+			authService.forgotPassword(data),
+	});
 }
 
 export function useResetPassword() {
-    return useMutation<UserResponse, AuthError, PasswordResetConfirm>({
-        mutationFn: (data: PasswordResetConfirm) =>
-            authService.resetPassword(data),
-    });
+	return useMutation<UserResponse, AuthError, PasswordResetConfirm>({
+		mutationFn: (data: PasswordResetConfirm) =>
+			authService.resetPassword(data),
+	});
 }
 
 export function useMe() {
-    return useQuery<UserResponse, AuthError>({
-        queryKey: ME_KEY,
-        queryFn: ({ signal }) => authService.getMe({ signal }),
-        retry: (failureCount, error) => {
-            if (error?.status === 0 && failureCount < 2) return true;
-            return false;
-        },
-        staleTime: 5 * 60 * 1000,
-    });
+	return useQuery<UserResponse, AuthError>({
+		queryKey: ME_KEY,
+		queryFn: ({ signal }) => authService.getMe({ signal }),
+		retry: (failureCount, error) => {
+			if (error?.status === 0 && failureCount < 2) return true;
+			return false;
+		},
+		staleTime: 5 * 60 * 1000,
+	});
 }
 
 export function useIsAuthenticated(): boolean {
-    return authService.isAuthenticated();
+	return authService.isAuthenticated();
 }
