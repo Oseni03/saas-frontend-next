@@ -16,7 +16,7 @@ export class UserService {
 
 	async getProfile(options?: CallOptions): Promise<UserResponse> {
 		try {
-			const res = await this.api.get<any>("/me", {
+			const res = await this.api.get<any>("/users/me", {
 				signal: options?.signal,
 			});
 			return snakeCaseSchema(UserResponseSchema).parse(res.data);
@@ -30,7 +30,7 @@ export class UserService {
 		options?: CallOptions,
 	): Promise<UserResponse> {
 		try {
-			const res = await this.api.patch<any>("/me", data, {
+			const res = await this.api.patch<any>("/users/me", data, {
 				signal: options?.signal,
 			});
 			return snakeCaseSchema(UserResponseSchema).parse(res.data);
@@ -44,7 +44,7 @@ export class UserService {
 		options?: CallOptions,
 	): Promise<void> {
 		try {
-			await this.api.post("/me/change-password", data, {
+			await this.api.post("/users/me/change-password", data, {
 				signal: options?.signal,
 			});
 		} catch (err) {
@@ -54,7 +54,7 @@ export class UserService {
 
 	async deleteAccount(options?: CallOptions): Promise<void> {
 		try {
-			await this.api.delete("/me", { signal: options?.signal });
+			await this.api.delete("/users/me", { signal: options?.signal });
 		} catch (err) {
 			throw extractApiError(err);
 		}
