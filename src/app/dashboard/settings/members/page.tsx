@@ -62,6 +62,7 @@ import { useZodForm } from "@/hooks/useZodForm";
 import { organizationService } from "@/lib/api-services";
 import type { InvitationResponse, MembershipResponse } from "@/schemas";
 import { InviteMemberFormSchema, MemberRole } from "@/schemas";
+import { extractApiErrorMessage } from "@/lib/error";
 
 const MEMBERS_KEY = ["organization-members"] as const;
 const INVITATIONS_KEY = ["organization-invitations"] as const;
@@ -227,9 +228,9 @@ export default function MembersPage() {
 				refetchType: "all",
 			});
 		},
-		onError: (err: any) => {
+		onError: (err) => {
 			setInviteError(
-				err?.response?.data?.error || "Failed to send invitation",
+				extractApiErrorMessage(err, "Failed to send invitation"),
 			);
 		},
 	});

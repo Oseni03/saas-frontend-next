@@ -9,6 +9,7 @@ import { useLogin } from "@/hooks/useAuth";
 import { useZodForm } from "@/hooks/useZodForm";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
+import { extractApiErrorMessage } from "@/lib/error";
 import { SignInFormSchema } from "@/schemas";
 
 export default function LoginPage() {
@@ -40,9 +41,10 @@ function LoginContent() {
 				onSuccess: () => router.push(redirectTo),
 				onError: (err) => {
 					setApiError(
-						"message" in err
-							? (err as { message: string }).message
-							: "Invalid email or password.",
+						extractApiErrorMessage(
+							err,
+							"Invalid email or password.",
+						),
 					);
 				},
 			},

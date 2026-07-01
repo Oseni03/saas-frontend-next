@@ -9,6 +9,7 @@ import { useSignup } from "@/hooks/useAuth";
 import { useZodForm } from "@/hooks/useZodForm";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
+import { extractApiErrorMessage } from "@/lib/error";
 import { SignUpFormSchema } from "@/schemas";
 
 export default function SignupPage() {
@@ -39,9 +40,10 @@ export default function SignupPage() {
 				onSuccess: () => router.push("/onboarding"),
 				onError: (err) => {
 					setApiError(
-						"message" in err
-							? (err as { message: string }).message
-							: "Failed to create account.",
+						extractApiErrorMessage(
+							err,
+							"Failed to create account.",
+						),
 					);
 				},
 			},
