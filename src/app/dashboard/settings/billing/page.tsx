@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import {
 	ArrowUpRight,
@@ -9,60 +8,23 @@ import {
 	Loader2,
 	ShieldCheck,
 } from "lucide-react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
-
-import { useOrganization } from "@/contexts/organization";
-import { billingService } from "@/lib/api-services";
-import { PlanTier } from "@/schemas";
-
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useOrganization } from "@/contexts/organization";
+import { billingService } from "@/lib/api-services";
+import { PRICING_PLANS } from "@/lib/pricing-plans";
+import { PlanTier } from "@/schemas";
+import type { PricingPlan } from "@/types";
 
-const PLAN_ORDER: PlanTier[] = [
-	PlanTier.FREE,
-	PlanTier.PRO,
-	PlanTier.BUSINESS,
-	PlanTier.ENTERPRISE,
-];
+const planMap: Record<string, PricingPlan> = Object.fromEntries(
+	PRICING_PLANS.map((p) => [p.id, p]),
+);
 
-const PLAN_LABELS: Record<PlanTier, string> = {
-	[PlanTier.FREE]: "Free",
-	[PlanTier.PRO]: "Pro",
-	[PlanTier.BUSINESS]: "Business",
-	[PlanTier.ENTERPRISE]: "Enterprise",
-};
-
-const PLAN_FEATURES: Record<PlanTier, string[]> = {
-	[PlanTier.FREE]: [
-		"Up to 3 projects",
-		"Basic analytics",
-		"Community support",
-	],
-	[PlanTier.PRO]: [
-		"Up to 10 projects",
-		"Advanced analytics",
-		"Priority support",
-		"Custom domains",
-	],
-	[PlanTier.BUSINESS]: [
-		"Unlimited projects",
-		"Team collaboration",
-		"Dedicated support",
-		"Custom integrations",
-		"API access",
-	],
-	[PlanTier.ENTERPRISE]: [
-		"Everything in Business",
-		"White-labeling",
-		"SAML/SSO",
-		"Custom SLA",
-		"Dedicated infrastructure",
-	],
-};
-
-function getUpgradePlans(current: PlanTier): PlanTier[] {
-	const idx = PLAN_ORDER.indexOf(current);
-	return PLAN_ORDER.slice(idx + 1);
+function getUpgradePlans(current: PlanTier): PricingPlan[] {
+	const idx = PRICING_PLANS.findIndex((p) => p.id === current);
+	return PRICING_PLANS.slice(idx + 1);
 }
 
 export default function BillingPage() {
@@ -108,6 +70,8 @@ export default function BillingPage() {
 		onError: () => {},
 	});
 
+	const currentPlanData = currentPlan ? planMap[currentPlan] : undefined;
+
 	if (!orgId) {
 		return (
 			<div className="flex flex-1 items-center justify-center">
@@ -146,7 +110,7 @@ export default function BillingPage() {
 							Current plan
 						</p>
 						<p className="text-2xl font-semibold tracking-tight mt-1">
-							{currentPlan && PLAN_LABELS[currentPlan]}
+							{currentPlanData?.name}
 						</p>
 					</div>
 					{currentPlan && (
@@ -162,9 +126,9 @@ export default function BillingPage() {
 					)}
 				</div>
 
-				{currentPlan && (
+				{currentPlanData && (
 					<ul className="flex flex-col gap-1.5">
-						{PLAN_FEATURES[currentPlan].map((feature) => (
+						{currentPlanData.features.map((feature) => (
 							<li
 								key={feature}
 								className="text-muted-foreground flex items-center gap-2 text-sm"
@@ -199,27 +163,31 @@ export default function BillingPage() {
 					<div className="grid gap-3">
 						{upgradePlans.map((plan) => (
 							<div
-								key={plan}
+								key={plan.id}
 								className="flex flex-col gap-3 rounded-lg border p-4"
 							>
 								<div className="flex items-center justify-between">
 									<div>
 										<p className="font-semibold">
-											{PLAN_LABELS[plan]}
+											{plan.name}
 										</p>
 									</div>
 									<Button
 										size="sm"
 										onClick={() =>
-											upgradeMutation.mutate(plan)
+											upgradeMutation.mutate(
+												plan.id as PlanTier,
+											)
 										}
 										disabled={
 											upgradeMutation.isPending &&
-											upgradeMutation.variables === plan
+											upgradeMutation.variables ===
+												plan.id
 										}
 									>
 										{upgradeMutation.isPending &&
-										upgradeMutation.variables === plan ? (
+										upgradeMutation.variables ===
+											plan.id ? (
 											<Loader2 className="mr-1 size-4 animate-spin" />
 										) : (
 											<ArrowUpRight className="mr-1 size-4" />
@@ -228,7 +196,7 @@ export default function BillingPage() {
 									</Button>
 								</div>
 								<ul className="flex flex-col gap-1">
-									{PLAN_FEATURES[plan].map((feature) => (
+									{plan.features.map((feature) => (
 										<li
 											key={feature}
 											className="text-muted-foreground flex items-center gap-2 text-xs"

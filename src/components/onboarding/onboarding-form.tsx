@@ -95,7 +95,7 @@ export function OnboardingForm() {
 						Choose your plan
 					</FormLabel>
 
-					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+					<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 						{PRICING_PLANS.map((plan) => {
 							const isSelected = selectedPlan === plan.id;
 							const isPending = mutation.isPending;
