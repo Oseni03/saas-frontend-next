@@ -26,19 +26,12 @@ function VerifyEmailContent() {
                         setSuccess(true);
                         setTimeout(() => router.push("/onboarding"), 2000);
                     },
-                    onError: (err: unknown) => {
-                        const data = (
-                            err as {
-                                response?: {
-                                    data?: { error?: string; detail?: string };
-                                };
-                            }
-                        )?.response?.data;
-                        setError(
-                            data?.error ||
-                                data?.detail ||
-                                "Failed to verify email.",
-                        );
+                    onError: (err) => {
+                        const message =
+                            "message" in err
+                                ? (err as { message: string }).message
+                                : "Failed to verify email.";
+                        setError(message);
                     },
                 },
             );

@@ -276,9 +276,9 @@ export default function MembersPage() {
     }
 
     const members = membersQuery.data ?? [];
-	const invitations = (invitationsQuery.data ?? []).filter(
-		(inv) => inv.status !== "revoked",
-	);
+    const invitations = (invitationsQuery.data ?? []).filter(
+        (inv) => inv.status !== "revoked",
+    );
     const currentUserMembership = members.find((m) => m.user_id === me?.id);
     const currentUserRole = currentUserMembership?.role ?? MemberRole.MEMBER;
     const canManage =

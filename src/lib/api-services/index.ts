@@ -1,6 +1,4 @@
 // api-services/index.ts
-export * from "./auth";
-export * from "./user";
 export * from "./organization";
 export * from "./billing";
 export * from "./notification";

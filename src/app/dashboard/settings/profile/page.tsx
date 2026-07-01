@@ -8,13 +8,14 @@ import { AvatarUpload } from "@/components/avatar-upload";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useMe, useUpdateMe } from "@/hooks/useAuth";
-import { userService } from "@/lib/api-services";
+import { useMe } from "@/hooks/useAuth";
+import { useUpdateProfile, useChangePassword } from "@/hooks/useUser";
 import { cn } from "@/lib/utils";
 
 export default function ProfilePage() {
     const { data: me, isLoading: meLoading } = useMe();
-    const updateMe = useUpdateMe();
+    const updateProfile = useUpdateProfile();
+    const changePassword = useChangePassword();
 
     const [fullName, setFullName] = useState("");
     const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
@@ -32,7 +33,7 @@ export default function ProfilePage() {
 
     function handleSaveProfile(e: React.FormEvent) {
         e.preventDefault();
-        updateMe.mutate(
+        updateProfile.mutate(
             {
                 full_name: fullName || null,
                 avatar_url: avatarUrl,
@@ -59,7 +60,7 @@ export default function ProfilePage() {
 
         setChangingPassword(true);
         try {
-            await userService.changePassword({
+            await changePassword.mutateAsync({
                 current_password: currentPassword,
                 new_password: newPassword,
             });
@@ -103,7 +104,7 @@ export default function ProfilePage() {
                         currentUrl={avatarUrl}
                         userName={fullName}
                         onUpload={(url) => setAvatarUrl(url)}
-                        disabled={updateMe.isPending}
+                        disabled={updateProfile.isPending}
                     />
                 </div>
 
@@ -133,9 +134,11 @@ export default function ProfilePage() {
                 <div className="flex items-center gap-2 pt-2">
                     <Button
                         type="submit"
-                        disabled={updateMe.isPending || updateMe.isSuccess}
+                        disabled={
+                            updateProfile.isPending || updateProfile.isSuccess
+                        }
                     >
-                        {updateMe.isPending ? (
+                        {updateProfile.isPending ? (
                             <Loader2 className="mr-1 size-4 animate-spin" />
                         ) : (
                             <Save className="mr-1 size-4" />
