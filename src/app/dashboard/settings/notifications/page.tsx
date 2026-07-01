@@ -4,7 +4,7 @@ import { Bell } from "lucide-react";
 
 export default function NotificationsPage() {
 	return (
-		<div className="flex flex-1 flex-col gap-8 p-6">
+		<div className="flex flex-1 flex-col gap-8">
 			<div>
 				<h1 className="text-2xl font-semibold tracking-tight">
 					Notifications

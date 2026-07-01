@@ -37,24 +37,6 @@ export const PRICING_PLANS: PricingPlan[] = [
 		cta: "Start Pro",
 	},
 	{
-		id: PlanTier.BUSINESS,
-		name: "Business",
-		priceMonthly: 99,
-		priceAnnually: 79,
-		description:
-			"Full suite for organizations with advanced security and control.",
-		popular: false,
-		features: [
-			"Everything in Pro",
-			"Unlimited team members",
-			"Advanced analytics",
-			"SSO & SAML",
-			"Audit logs",
-			"Dedicated account manager",
-		],
-		cta: "Start Business",
-	},
-	{
 		id: PlanTier.ENTERPRISE,
 		name: "Enterprise",
 		priceMonthly: 299,

@@ -34,14 +34,14 @@ export function CreateOrganizationModal({
 	const { setActiveOrg } = useOrganization();
 
 	const [name, setName] = React.useState("");
-	const [plan, setPlan] = React.useState<PlanTier>("FREE" as PlanTier);
+	const [plan, setPlan] = React.useState<PlanTier>("free" as PlanTier);
 	const [error, setError] = React.useState<string | null>(null);
 
 	const mutation = useMutation({
 		mutationFn: async () => {
 			const org = await organizationService.create({ name });
 
-			if (plan !== "FREE") {
+			if (plan !== "free") {
 				const callbackUrl = `${window.location.origin}/dashboard/settings/billing?verified=true`;
 				const billing = await billingService.initialize(org.id, {
 					plan,
@@ -76,7 +76,7 @@ export function CreateOrganizationModal({
 
 	const resetForm = () => {
 		setName("");
-		setPlan("FREE" as PlanTier);
+		setPlan("free" as PlanTier);
 		setError(null);
 	};
 
@@ -86,7 +86,7 @@ export function CreateOrganizationModal({
 		mutation.mutate();
 	};
 
-	const isPaidPlan = plan !== "FREE";
+	const isPaidPlan = plan !== "free";
 
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
@@ -129,22 +129,22 @@ export function CreateOrganizationModal({
 						>
 							{[
 								{
-									value: "FREE" as PlanTier,
+									value: "free" as PlanTier,
 									label: "Free",
 									desc: "Get started with basic features",
 								},
 								{
-									value: "PRO" as PlanTier,
+									value: "pro" as PlanTier,
 									label: "Pro",
 									desc: "Advanced features for growing teams",
 								},
 								{
-									value: "BUSINESS" as PlanTier,
+									value: "business" as PlanTier,
 									label: "Business",
 									desc: "Full suite for organizations",
 								},
 								{
-									value: "ENTERPRISE" as PlanTier,
+									value: "enterprise" as PlanTier,
 									label: "Enterprise",
 									desc: "Custom solutions and support",
 								},

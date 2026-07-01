@@ -9,66 +9,86 @@ export const ORGANIZATIONS_KEY = ["organizations"] as const;
 export const ACTIVE_ORG_STORAGE_KEY = "active_organization_id";
 
 interface OrganizationContextValue {
-  organizations: OrgResponse[];
-  activeOrg: OrgResponse | null;
-  setActiveOrg: (org: OrgResponse) => void;
-  isLoading: boolean;
-  isFetched: boolean;
+	organizations: OrgResponse[];
+	activeOrg: OrgResponse | null;
+	setActiveOrg: (org: OrgResponse) => void;
+	isLoading: boolean;
+	isFetched: boolean;
 }
 
 const OrganizationContext = createContext<OrganizationContextValue | undefined>(
-  undefined,
+	undefined,
 );
 
 export function OrganizationProvider({
-  children,
+	children,
 }: {
-  children: React.ReactNode;
+	children: React.ReactNode;
 }) {
-  const [activeOrgId, setActiveOrgId] = useState<string | null>(null);
-  const initialized = useRef(false);
+	const [activeOrgId, setActiveOrgId] = useState<string | null>(null);
+	const initialized = useRef(false);
 
-  const { data: organizations = [], isLoading, isFetched } = useQuery({
-    queryKey: ORGANIZATIONS_KEY,
-    queryFn: () => organizationService.list(),
-    staleTime: 1000 * 60 * 5,
-  });
+	const {
+		data: organizations = [],
+		isLoading,
+		isFetched,
+		isError,
+		error,
+	} = useQuery({
+		queryKey: ORGANIZATIONS_KEY,
+		queryFn: () => organizationService.list(),
+		staleTime: 1000 * 60 * 5,
+	});
 
-  useEffect(() => {
-    if (organizations.length === 0 || initialized.current) return;
-    initialized.current = true;
+	useEffect(() => {
+		console.log({ isFetched, isError, error, organizations });
+	}, [isFetched, isError, error, organizations]);
 
-    const stored = localStorage.getItem(ACTIVE_ORG_STORAGE_KEY);
-    const target =
-      stored && organizations.some((o) => o.id === stored)
-        ? stored
-        : organizations[0].id;
+	useEffect(() => {
+		if (organizations.length === 0 || initialized.current) return;
+		initialized.current = true;
 
-    setActiveOrgId(target);
-    localStorage.setItem(ACTIVE_ORG_STORAGE_KEY, target);
-  }, [organizations]);
+		const stored = localStorage.getItem(ACTIVE_ORG_STORAGE_KEY);
+		const target =
+			stored && organizations.some((o) => o.id === stored)
+				? stored
+				: organizations[0].id;
 
-  const activeOrg =
-    organizations.find((o) => o.id === activeOrgId) ?? organizations[0] ?? null;
+		setActiveOrgId(target);
+		localStorage.setItem(ACTIVE_ORG_STORAGE_KEY, target);
+	}, [organizations]);
 
-  const setActiveOrg = (org: OrgResponse) => {
-    setActiveOrgId(org.id);
-    localStorage.setItem(ACTIVE_ORG_STORAGE_KEY, org.id);
-  };
+	const activeOrg =
+		organizations.find((o) => o.id === activeOrgId) ??
+		organizations[0] ??
+		null;
 
-  return (
-    <OrganizationContext.Provider
-      value={{ organizations, activeOrg, setActiveOrg, isLoading, isFetched }}
-    >
-      {children}
-    </OrganizationContext.Provider>
-  );
+	const setActiveOrg = (org: OrgResponse) => {
+		setActiveOrgId(org.id);
+		localStorage.setItem(ACTIVE_ORG_STORAGE_KEY, org.id);
+	};
+
+	return (
+		<OrganizationContext.Provider
+			value={{
+				organizations,
+				activeOrg,
+				setActiveOrg,
+				isLoading,
+				isFetched,
+			}}
+		>
+			{children}
+		</OrganizationContext.Provider>
+	);
 }
 
 export function useOrganization() {
-  const ctx = useContext(OrganizationContext);
-  if (!ctx) {
-    throw new Error("useOrganization must be used within OrganizationProvider");
-  }
-  return ctx;
+	const ctx = useContext(OrganizationContext);
+	if (!ctx) {
+		throw new Error(
+			"useOrganization must be used within OrganizationProvider",
+		);
+	}
+	return ctx;
 }

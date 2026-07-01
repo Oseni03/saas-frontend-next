@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { organizationService } from "@/lib/api-services";
 import { billingService } from "@/lib/api-services";
 import { PRICING_PLANS } from "@/lib/pricing-plans";
-import { PlanTier } from "@/schemas";
+import { type OrgResponse, PlanTier } from "@/schemas";
 import { ORGANIZATIONS_KEY, useOrganization } from "@/contexts/organization";
 
 export function OnboardingForm() {
@@ -25,7 +25,7 @@ export function OnboardingForm() {
 		mutationFn: async () => {
 			const org = await organizationService.create({ name });
 
-			if (selectedPlan !== "FREE") {
+			if (selectedPlan !== "free") {
 				const callbackUrl = `${window.location.origin}/onboarding?verified=true`;
 				const billing = await billingService.initialize(org.id, {
 					plan: selectedPlan,
@@ -43,7 +43,10 @@ export function OnboardingForm() {
 		onSuccess: (org) => {
 			if (!org) return;
 
-			queryClient.invalidateQueries({ queryKey: ORGANIZATIONS_KEY });
+			queryClient.setQueryData<OrgResponse[]>(
+				ORGANIZATIONS_KEY,
+				(old = []) => [...old, org],
+			);
 			setActiveOrg(org);
 			router.push("/dashboard");
 		},
@@ -166,7 +169,7 @@ export function OnboardingForm() {
 					<Loader2 className="size-4 animate-spin" />
 				) : (
 					<>
-						{selectedPlan === "FREE"
+						{selectedPlan === "free"
 							? "Create workspace"
 							: "Continue to payment"}
 						<ArrowRight className="w-3.5 h-3.5 ml-2" />

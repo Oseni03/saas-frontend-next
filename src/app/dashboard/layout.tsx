@@ -29,7 +29,9 @@ export default function DashboardLayout({
 							</div>
 						</header>
 						<div className="flex flex-1 flex-col bg-background">
-							{children}
+							<div className="mx-auto w-full max-w-5xl p-6">
+								{children}
+							</div>
 						</div>
 					</SidebarInset>
 				</SidebarProvider>

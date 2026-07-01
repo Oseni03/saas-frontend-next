@@ -19,7 +19,7 @@ export function OrganizationGuard({ children }: { children: React.ReactNode }) {
 		}
 	}, [isFetched, organizations, router]);
 
-	if (!isFetched || organizations.length === 0) {
+	if (organizations.length === 0) {
 		return null;
 	}
 

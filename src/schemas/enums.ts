@@ -1,14 +1,14 @@
 export enum MemberRole {
-	OWNER = "OWNER",
-	ADMIN = "ADMIN",
-	MEMBER = "MEMBER",
+	OWNER = "owner",
+	ADMIN = "admin",
+	MEMBER = "member",
 }
 
 export enum PlanTier {
-	FREE = "FREE",
-	PRO = "PRO",
-	BUSINESS = "BUSINESS",
-	ENTERPRISE = "ENTERPRISE",
+	FREE = "free",
+	PRO = "pro",
+	BUSINESS = "business",
+	ENTERPRISE = "enterprise",
 }
 
 export enum InvitationStatus {

@@ -31,6 +31,7 @@ const data = {
       title: "Settings",
       url: "#",
       icon: Settings2,
+      isActive: true,
       items: [
         { title: "General", url: "/dashboard/settings/general" },
         { title: "Members", url: "/dashboard/settings/members" },

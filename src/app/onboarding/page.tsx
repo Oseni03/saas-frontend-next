@@ -1,21 +1,32 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import Link from "next/link";
-import { ArrowLeft, Loader2, CheckCircle } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
+import { ArrowLeft, CheckCircle, Loader2 } from "lucide-react";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { OnboardingForm } from "@/components/onboarding/onboarding-form";
-import { billingService } from "@/lib/api-services";
 import {
 	ORGANIZATIONS_KEY,
 	OrganizationProvider,
+	useOrganization,
 } from "@/contexts/organization";
+import { type OrgResponse } from "@/schemas";
+import { billingService, organizationService } from "@/lib/api-services";
 
 export default function OnboardingPage() {
+	return (
+		<OrganizationProvider>
+			<OnboardingContent />
+		</OrganizationProvider>
+	);
+}
+
+function OnboardingContent() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const queryClient = useQueryClient();
+	const { setActiveOrg } = useOrganization();
 
 	const [status, setStatus] = useState<
 		"form" | "verifying" | "verified" | "error"
@@ -24,29 +35,34 @@ export default function OnboardingPage() {
 
 	useEffect(() => {
 		const verified = searchParams.get("verified");
-		if (verified === "true") {
-			setStatus("verifying");
+		if (verified !== "true") return;
 
-			billingService
-				.verify()
-				.then(() => {
-					setStatus("verified");
-					queryClient.invalidateQueries({
-						queryKey: ORGANIZATIONS_KEY,
-					});
-					setTimeout(() => router.push("/dashboard"), 1500);
-				})
-				.catch((err: unknown) => {
-					const msg =
-						(err as { response?: { data?: { error?: string } } })
-							?.response?.data?.error ||
-						(err as { message?: string })?.message ||
-						"Payment verification failed";
-					setErrorMessage(msg);
-					setStatus("error");
+		setStatus("verifying");
+
+		billingService
+			.verify()
+			.then(async (result) => {
+				const org = await organizationService.getOne(
+					result.organization_id,
+				);
+				setActiveOrg(org);
+				setStatus("verified");
+				queryClient.setQueryData<OrgResponse[]>(ORGANIZATIONS_KEY, (old = []) => {
+					if (old.some((o) => o.id === org.id)) return old;
+					return [...old, org];
 				});
-		}
-	}, [searchParams, router, queryClient]);
+				setTimeout(() => router.push("/dashboard"), 1500);
+			})
+			.catch((err: unknown) => {
+				const msg =
+					(err as { response?: { data?: { error?: string } } })
+						?.response?.data?.error ||
+					(err as { message?: string })?.message ||
+					"Payment verification failed";
+				setErrorMessage(msg);
+				setStatus("error");
+			});
+	}, [searchParams, router, queryClient, setActiveOrg]);
 
 	if (status === "verifying") {
 		return (
@@ -98,36 +114,34 @@ export default function OnboardingPage() {
 	}
 
 	return (
-		<OrganizationProvider>
-			<div className="min-h-screen bg-background flex items-center justify-center p-6 font-sans">
-				<div className="w-full max-w-4xl">
-					<Link
-						href="/"
-						className="mb-8 inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-foreground/50 hover:text-foreground transition-colors"
-					>
-						<ArrowLeft className="w-3.5 h-3.5" />
-						Back to Home
-					</Link>
+		<div className="min-h-screen bg-background flex items-center justify-center p-6 font-sans">
+			<div className="w-full max-w-4xl">
+				<Link
+					href="/"
+					className="mb-8 inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-foreground/50 hover:text-foreground transition-colors"
+				>
+					<ArrowLeft className="w-3.5 h-3.5" />
+					Back to Home
+				</Link>
 
-					<div className="bg-muted p-8 md:p-10">
-						<div className="flex items-center gap-1.5 select-none text-[10px] font-mono text-primary font-bold uppercase tracking-wider mb-6">
-							<span className="w-2.5 h-2.5 border border-primary flex items-center justify-center text-[7px]">
-								II
-							</span>
-							<span>Onboarding // Workspace Setup</span>
-						</div>
-
-						<h1 className="text-foreground text-2xl md:text-3xl font-display font-bold tracking-tight">
-							Set up your workspace
-						</h1>
-						<p className="text-foreground/60 text-xs font-mono uppercase mt-1 mb-8">
-							// CREATE ORGANIZATION
-						</p>
-
-						<OnboardingForm />
+				<div className="bg-muted p-8 md:p-10">
+					<div className="flex items-center gap-1.5 select-none text-[10px] font-mono text-primary font-bold uppercase tracking-wider mb-6">
+						<span className="w-2.5 h-2.5 border border-primary flex items-center justify-center text-[7px]">
+							II
+						</span>
+						<span>Onboarding {/* Workspace Setup */}</span>
 					</div>
+
+					<h1 className="text-foreground text-2xl md:text-3xl font-display font-bold tracking-tight">
+						Set up your workspace
+					</h1>
+					<p className="text-foreground/60 text-xs font-mono uppercase mt-1 mb-8">
+						{/* CREATE ORGANIZATION */}
+					</p>
+
+					<OnboardingForm />
 				</div>
 			</div>
-		</OrganizationProvider>
+		</div>
 	);
 }
