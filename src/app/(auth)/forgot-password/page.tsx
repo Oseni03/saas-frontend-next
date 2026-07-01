@@ -6,36 +6,39 @@ import Link from "next/link";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import ForgotPasswordForm from "@/components/auth/forgot-password-form";
 import { useForgotPassword } from "@/hooks/useAuth";
+import { useZodForm } from "@/hooks/useZodForm";
+import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
+import { ForgotPasswordFormSchema } from "@/schemas";
 
 export default function ForgotPasswordPage() {
     const router = useRouter();
-    const [email, setEmail] = useState("");
-    const [formError, setFormError] = useState<string | null>(null);
+    const [apiError, setApiError] = useState<string | null>(null);
+
+    const form = useZodForm(ForgotPasswordFormSchema, { email: "" });
 
     const forgotMutation = useForgotPassword();
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        setFormError(null);
+    function onSubmit(data: { email: string }) {
+        setApiError(null);
         forgotMutation.mutate(
-            { email },
+            { email: data.email },
             {
                 onSuccess: () => {
                     router.push(
-                        `/reset-password?email=${encodeURIComponent(email)}`,
+                        `/reset-password?email=${encodeURIComponent(data.email)}`,
                     );
                 },
                 onError: (err) => {
-                    const message =
+                    setApiError(
                         "message" in err
                             ? (err as { message: string }).message
-                            : "Failed to send reset code.";
-                    setFormError(message);
+                            : "Failed to send reset code.",
+                    );
                 },
             },
         );
-    };
+    }
 
     return (
         <div className="min-h-screen bg-background flex items-center justify-center p-6 font-sans">
@@ -63,27 +66,32 @@ export default function ForgotPasswordPage() {
                         // SEND RESET CODE
                     </p>
 
-                    {formError && (
+                    {apiError && (
                         <div className="mb-6 p-3 border border-red-800 bg-red-500/5 text-red-600 dark:text-red-400 font-mono text-[11px] leading-relaxed">
-                            {formError}
+                            {apiError}
                         </div>
                     )}
 
-                    <form onSubmit={handleSubmit} className="space-y-5">
-                        <ForgotPasswordForm email={email} setEmail={setEmail} />
-
-                        <Button
-                            type="submit"
-                            disabled={forgotMutation.isPending}
-                            className="w-full h-12 font-mono text-xs uppercase tracking-widest rounded-none mt-4"
+                    <Form {...form}>
+                        <form
+                            onSubmit={form.handleSubmit(onSubmit)}
+                            className="space-y-5"
                         >
-                            {forgotMutation.isPending ? (
-                                <Loader2 className="size-4 animate-spin" />
-                            ) : (
-                                "Send Reset Code"
-                            )}
-                        </Button>
-                    </form>
+                            <ForgotPasswordForm />
+
+                            <Button
+                                type="submit"
+                                disabled={forgotMutation.isPending}
+                                className="w-full h-12 font-mono text-xs uppercase tracking-widest rounded-none mt-4"
+                            >
+                                {forgotMutation.isPending ? (
+                                    <Loader2 className="size-4 animate-spin" />
+                                ) : (
+                                    "Send Reset Code"
+                                )}
+                            </Button>
+                        </form>
+                    </Form>
 
                     <div className="border-t border-border mt-8 pt-5 flex items-center justify-between text-[11px] font-mono">
                         <span className="text-foreground/50">
