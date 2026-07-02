@@ -1,41 +1,31 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-
-// Routes that require authentication
-const PROTECTED_PREFIXES = ["/dashboard", "/onboarding", "/invitations"];
-
-// Routes accessible only to unauthenticated users
-const AUTH_ROUTES = [
-	"/login",
-	"/signup",
-	"/forgot-password",
-	"/reset-password",
-];
+import { ROUTES, STORAGE_KEYS } from "@/lib/config";
 
 export function middleware(request: NextRequest) {
 	const { pathname } = request.nextUrl;
-	const token = request.cookies.get("access_token")?.value;
+	const token = request.cookies.get(STORAGE_KEYS.accessToken)?.value;
 	const isAuthenticated = !!token;
 
-	const isProtected = PROTECTED_PREFIXES.some((prefix) =>
+	const isProtected = ROUTES.protectedPrefixes.some((prefix) =>
 		pathname.startsWith(prefix),
 	);
-	const isAuthRoute = AUTH_ROUTES.some((route) => pathname.startsWith(route));
+	const isAuthRoute = ROUTES.authRoutes.some((route) =>
+		pathname.startsWith(route),
+	);
 
-	// Unauthenticated user trying to access a protected route → send to login
 	if (isProtected && !isAuthenticated) {
 		const url = request.nextUrl.clone();
-		url.pathname = "/login";
-		if (pathname !== "/login") {
+		url.pathname = ROUTES.login;
+		if (pathname !== ROUTES.login) {
 			url.searchParams.set("redirect", pathname + request.nextUrl.search);
 		}
 		return NextResponse.redirect(url);
 	}
 
-	// Authenticated user trying to access an auth page → send to dashboard
 	if (isAuthRoute && isAuthenticated) {
 		const url = request.nextUrl.clone();
-		url.pathname = "/dashboard";
+		url.pathname = ROUTES.dashboard.root;
 		return NextResponse.redirect(url);
 	}
 

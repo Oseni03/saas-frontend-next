@@ -3,7 +3,7 @@ import PolicyTabs from "@/components/privacy/policy-tabs";
 import { Badge } from "@/components/ui/badge";
 
 export const metadata = {
-	title: "Privacy Policy — Opticast",
+	title: "Privacy Policy — Boilerplate SaaS",
 	description:
 		"Our transparent, developer-first policies on data privacy and protection.",
 };

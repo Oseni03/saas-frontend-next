@@ -6,6 +6,7 @@ import {
 	type NotificationListResponse,
 	NotificationResponseSchema,
 } from "@/schemas";
+import { API_ENDPOINTS } from "@/lib/config";
 
 export const notificationService = {
 	/**
@@ -19,7 +20,9 @@ export const notificationService = {
 			page_size?: number;
 		} = {},
 	): Promise<NotificationListResponse> => {
-		const res = await api.get<any>("/notifications/", { params });
+		const res = await api.get<any>(API_ENDPOINTS.notifications.root, {
+			params,
+		});
 
 		return snakeCaseSchema(
 			z.object({
@@ -31,17 +34,11 @@ export const notificationService = {
 		).parse(res.data);
 	},
 
-	/**
-	 * Mark a single notification as read
-	 */
 	markRead: async (id: string): Promise<void> => {
-		await api.post(`/notifications/${id}/read`);
+		await api.post(API_ENDPOINTS.notifications.markRead(id));
 	},
 
-	/**
-	 * Mark all notifications as read
-	 */
 	markAllRead: async (): Promise<void> => {
-		await api.post("/notifications/mark-all-read");
+		await api.post(API_ENDPOINTS.notifications.markAllRead);
 	},
 };

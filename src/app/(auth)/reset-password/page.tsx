@@ -11,6 +11,7 @@ import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { extractApiErrorMessage } from "@/lib/error";
 import { ResetPasswordFormSchema } from "@/schemas";
+import { ROUTES } from "@/lib/config";
 
 function ResetPasswordContent() {
 	const router = useRouter();
@@ -36,7 +37,7 @@ function ResetPasswordContent() {
 			{ token: data.verificationCode, new_password: data.password },
 			{
 				onSuccess: () => {
-					router.push("/login");
+					router.push(ROUTES.login);
 				},
 				onError: (err) => {
 					setApiError(
@@ -54,7 +55,7 @@ function ResetPasswordContent() {
 		<div className="min-h-screen bg-background flex items-center justify-center p-6 font-sans">
 			<div className="w-full max-w-md">
 				<Link
-					href="/login"
+					href={ROUTES.login}
 					className="mb-8 inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-foreground/50 hover:text-foreground transition-colors"
 				>
 					<ArrowLeft className="w-3.5 h-3.5" />
@@ -114,7 +115,7 @@ function ResetPasswordContent() {
 							Remember your password?
 						</span>
 						<Link
-							href="/login"
+							href={ROUTES.login}
 							className="text-primary hover:underline font-bold uppercase"
 						>
 							Sign In &rarr;

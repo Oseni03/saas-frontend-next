@@ -5,6 +5,7 @@ import { useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ENV } from "@/lib/config";
 
 function getInitials(name: string | null | undefined): string {
 	if (!name) return "?";
@@ -40,8 +41,8 @@ export function AvatarUpload({
 			return;
 		}
 
-		const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-		const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
+		const cloudName = ENV.cloudinaryCloudName;
+		const uploadPreset = ENV.cloudinaryUploadPreset;
 
 		if (!cloudName || !uploadPreset) {
 			toast.error("Cloudinary is not configured");

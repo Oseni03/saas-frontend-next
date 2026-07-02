@@ -1,16 +1,14 @@
 import api from "../api";
 import { snakeCaseSchema } from "../utils";
 import { z } from "zod";
+import { API_ENDPOINTS } from "@/lib/config";
 
 export const healthService = {
-	/**
-	 * Basic health check - returns app status
-	 */
 	getHealth: async (): Promise<{
 		status: string;
 		app: string;
 	}> => {
-		const res = await api.get<any>("/health");
+		const res = await api.get<any>(API_ENDPOINTS.health.health);
 
 		return snakeCaseSchema(
 			z.object({
@@ -20,13 +18,10 @@ export const healthService = {
 		).parse(res.data);
 	},
 
-	/**
-	 * Readiness check - verifies database connectivity and system health
-	 */
 	getReady: async (): Promise<{
 		status: string;
 	}> => {
-		const res = await api.get<any>("/ready");
+		const res = await api.get<any>(API_ENDPOINTS.health.ready);
 
 		return snakeCaseSchema(
 			z.object({

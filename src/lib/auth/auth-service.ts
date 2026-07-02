@@ -15,6 +15,7 @@ import {
 } from "@/schemas";
 import { extractApiError, type AuthError } from "./errors";
 import type { CallOptions, TokenStore } from "./types";
+import { API_ENDPOINTS } from "@/lib/config";
 
 interface SignupResponse {
 	user: UserResponse;
@@ -33,9 +34,13 @@ export class AuthService {
 
 	async login(data: LoginRequest, options?: CallOptions): Promise<TokenPair> {
 		try {
-			const res = await this.api.post<any>("/auth/login", data, {
-				signal: options?.signal,
-			});
+			const res = await this.api.post<any>(
+				API_ENDPOINTS.auth.login,
+				data,
+				{
+					signal: options?.signal,
+				},
+			);
 			const tokens = snakeCaseSchema(TokenPairSchema).parse(res.data);
 			this.tokenStore.set(tokens.access_token, tokens.refresh_token);
 			return tokens;
@@ -49,9 +54,13 @@ export class AuthService {
 		options?: CallOptions,
 	): Promise<SignupResponse> {
 		try {
-			const res = await this.api.post<any>("/auth/register", data, {
-				signal: options?.signal,
-			});
+			const res = await this.api.post<any>(
+				API_ENDPOINTS.auth.register,
+				data,
+				{
+					signal: options?.signal,
+				},
+			);
 			const tokens = snakeCaseSchema(TokenPairSchema).parse(res.data);
 			const user = snakeCaseSchema(UserResponseSchema).parse(res.data);
 			this.tokenStore.set(tokens.access_token, tokens.refresh_token);
@@ -66,9 +75,13 @@ export class AuthService {
 		options?: CallOptions,
 	): Promise<TokenPair> {
 		try {
-			const res = await this.api.post<any>("/auth/refresh", data, {
-				signal: options?.signal,
-			});
+			const res = await this.api.post<any>(
+				API_ENDPOINTS.auth.refresh,
+				data,
+				{
+					signal: options?.signal,
+				},
+			);
 			const tokens = snakeCaseSchema(TokenPairSchema).parse(res.data);
 			this.tokenStore.set(tokens.access_token, tokens.refresh_token);
 			return tokens;
@@ -82,7 +95,7 @@ export class AuthService {
 		if (refresh) {
 			try {
 				await this.api.post(
-					"/auth/logout",
+					API_ENDPOINTS.auth.logout,
 					{ refresh_token: refresh },
 					{ signal: options?.signal },
 				);
@@ -98,9 +111,13 @@ export class AuthService {
 		options?: CallOptions,
 	): Promise<UserResponse> {
 		try {
-			const res = await this.api.post<any>("/auth/verify-email", data, {
-				signal: options?.signal,
-			});
+			const res = await this.api.post<any>(
+				API_ENDPOINTS.auth.verifyEmail,
+				data,
+				{
+					signal: options?.signal,
+				},
+			);
 			return snakeCaseSchema(UserResponseSchema).parse(res.data);
 		} catch (err) {
 			throw extractApiError(err);
@@ -113,7 +130,7 @@ export class AuthService {
 	): Promise<{ message: string }> {
 		try {
 			const res = await this.api.post<any>(
-				"/auth/forgot-password",
+				API_ENDPOINTS.auth.forgotPassword,
 				data,
 				{
 					signal: options?.signal,
@@ -133,9 +150,13 @@ export class AuthService {
 		options?: CallOptions,
 	): Promise<UserResponse> {
 		try {
-			const res = await this.api.post<any>("/auth/reset-password", data, {
-				signal: options?.signal,
-			});
+			const res = await this.api.post<any>(
+				API_ENDPOINTS.auth.resetPassword,
+				data,
+				{
+					signal: options?.signal,
+				},
+			);
 			return snakeCaseSchema(UserResponseSchema).parse(res.data);
 		} catch (err) {
 			throw extractApiError(err);
@@ -144,7 +165,7 @@ export class AuthService {
 
 	async getMe(options?: CallOptions): Promise<UserResponse> {
 		try {
-			const res = await this.api.get<any>("/auth/me", {
+			const res = await this.api.get<any>(API_ENDPOINTS.auth.me, {
 				signal: options?.signal,
 			});
 			return snakeCaseSchema(UserResponseSchema).parse(res.data);

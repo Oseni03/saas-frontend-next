@@ -9,20 +9,18 @@ import {
 	UserResponseSchema,
 } from "@/schemas";
 import { z } from "zod";
+import { API_ENDPOINTS } from "@/lib/config";
 
 export const adminService = {
 	/**
 	 * Get admin dashboard statistics
 	 */
 	getStats: async (): Promise<StatsResponse> => {
-		const res = await api.get<any>("/admin/stats");
+		const res = await api.get<any>(API_ENDPOINTS.admin.stats);
 
-		return snakeCaseSchema(StatResponseSchema).parse(res.data); // Replace `any` with proper Stats type when available
+		return snakeCaseSchema(StatResponseSchema).parse(res.data);
 	},
 
-	/**
-	 * List users (admin only)
-	 */
 	listUsers: async (
 		params: {
 			page?: number;
@@ -31,36 +29,33 @@ export const adminService = {
 			is_active?: boolean;
 		} = {},
 	): Promise<UserResponse[]> => {
-		const res = await api.get<any>("/admin/users", { params });
+		const res = await api.get<any>(API_ENDPOINTS.admin.users, { params });
 
-		return snakeCaseSchema(z.array(UserResponseSchema)).parse(res.data); // Use proper PaginatedUser type when defined
+		return snakeCaseSchema(z.array(UserResponseSchema)).parse(res.data);
 	},
 
-	/**
-	 * List organizations (admin only)
-	 */
 	listOrganizations: async (
 		params: { page?: number; page_size?: number; search?: string } = {},
 	): Promise<OrgResponse[]> => {
-		const res = await api.get<any>("/admin/organizations", { params });
+		const res = await api.get<any>(API_ENDPOINTS.admin.organizations, {
+			params,
+		});
 
 		return snakeCaseSchema(z.array(OrgResponseSchema)).parse(res.data);
 	},
 
-	/**
-	 * Deactivate a user
-	 */
 	deactivateUser: async (userId: string): Promise<UserResponse> => {
-		const res = await api.patch<any>(`/admin/users/${userId}/deactivate`);
+		const res = await api.patch<any>(
+			API_ENDPOINTS.admin.deactivateUser(userId),
+		);
 
 		return snakeCaseSchema(UserResponseSchema).parse(res.data);
 	},
 
-	/**
-	 * Activate a user
-	 */
 	activateUser: async (userId: string): Promise<UserResponse> => {
-		const res = await api.patch<any>(`/admin/users/${userId}/activate`);
+		const res = await api.patch<any>(
+			API_ENDPOINTS.admin.activateUser(userId),
+		);
 
 		return snakeCaseSchema(UserResponseSchema).parse(res.data);
 	},

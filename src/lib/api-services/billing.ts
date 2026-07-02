@@ -2,11 +2,12 @@ import api from "../api";
 import type {
 	BillingInitSchema,
 	BillingVerifyResponse,
-	OrgResponse, // if needed for responses
+	OrgResponse,
 } from "@/schemas";
 import { BillingVerifyResponseSchema } from "@/schemas";
 import { snakeCaseSchema } from "../utils";
 import z from "zod";
+import { API_ENDPOINTS } from "@/lib/config";
 
 export const billingService = {
 	// ── Webhook (usually not called from frontend) ───────────────────────
@@ -20,7 +21,7 @@ export const billingService = {
 	 */
 	verify: async (reference?: string): Promise<BillingVerifyResponse> => {
 		const params = reference ? { reference } : {};
-		const res = await api.get<any>("/billing/verify", {
+		const res = await api.get<any>(API_ENDPOINTS.billing.verify, {
 			params,
 		});
 		return snakeCaseSchema(BillingVerifyResponseSchema).parse(res.data);
@@ -36,7 +37,7 @@ export const billingService = {
 		data: BillingInitSchema,
 	): Promise<{ authorization_url: string }> => {
 		const res = await api.post<any>(
-			`/billing/organizations/${orgId}/initialize`,
+			API_ENDPOINTS.billing.initialize(orgId),
 			data,
 		);
 		return snakeCaseSchema(
@@ -50,9 +51,7 @@ export const billingService = {
 	 * Get billing management URL (customer portal / update subscription)
 	 */
 	getManageUrl: async (orgId: string): Promise<{ manage_url: string }> => {
-		const res = await api.get<any>(
-			`/billing/organizations/${orgId}/manage`,
-		);
+		const res = await api.get<any>(API_ENDPOINTS.billing.manage(orgId));
 		return snakeCaseSchema(
 			z.object({
 				manage_url: z.string(),
@@ -64,6 +63,6 @@ export const billingService = {
 	 * Cancel subscription for an organization
 	 */
 	cancel: async (orgId: string): Promise<void> => {
-		await api.post(`/billing/organizations/${orgId}/cancel`);
+		await api.post(API_ENDPOINTS.billing.cancel(orgId));
 	},
 };

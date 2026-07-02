@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { APP } from "@/lib/config";
 
 interface AppLogoProps {
 	width?: number;
@@ -11,7 +12,7 @@ export function AppLogo({
 	width = 32,
 	height = 32,
 	className = "",
-	alt = "Opticast logo",
+	alt = `${APP.name} logo`,
 }: AppLogoProps) {
 	return (
 		<Image

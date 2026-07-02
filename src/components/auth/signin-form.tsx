@@ -11,6 +11,7 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { ROUTES } from "@/lib/config";
 
 export default function SignInForm() {
 	const router = useRouter();
@@ -54,7 +55,9 @@ export default function SignInForm() {
 								type="button"
 								variant="link"
 								size="xs"
-								onClick={() => router.push("/forgot-password")}
+								onClick={() =>
+									router.push(ROUTES.forgotPassword)
+								}
 								className="text-[9px] font-mono text-primary uppercase tracking-widest h-auto p-0"
 							>
 								Forgot Token?

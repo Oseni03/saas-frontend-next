@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useZodForm } from "@/hooks/useZodForm";
+import { APP } from "@/lib/config";
 
 const NewsletterSchema = z.object({
 	email: z.email("Please enter a valid email address."),
@@ -253,10 +254,8 @@ export default function Footer() {
 
 				{/* Bottom copyright segment */}
 				<div className="flex flex-col md:flex-row items-center justify-between border-t border-border/50 pt-8 text-[11px] text-foreground/40 select-none font-mono">
-					<p>© 2026 Index Inc. All rights reserved.</p>
-					<p className="mt-2 md:mt-0">
-						Minimalist Publishing Workspace
-					</p>
+					<p>{APP.copyright}</p>
+					<p className="mt-2 md:mt-0">{APP.tagline}</p>
 				</div>
 			</div>
 		</footer>

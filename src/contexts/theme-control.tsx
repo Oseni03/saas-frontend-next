@@ -8,6 +8,7 @@ import {
 	useCallback,
 	type ReactNode,
 } from "react";
+import { STORAGE_KEYS, DEFAULTS } from "@/lib/config";
 
 export type ThemeMode = "light" | "dark";
 
@@ -25,7 +26,9 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export function ThemeProvider({ children }: { children: ReactNode }) {
 	const [themeMode, setThemeMode] = useState<ThemeMode>(() => {
 		if (typeof window !== "undefined") {
-			const saved = localStorage.getItem("index-theme-mode") as ThemeMode;
+			const saved = localStorage.getItem(
+				STORAGE_KEYS.themeMode,
+			) as ThemeMode;
 			if (saved === "light" || saved === "dark") {
 				return saved;
 			}
@@ -39,12 +42,12 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
 	const [primaryColor, setPrimaryColorState] = useState<string>(() => {
 		if (typeof window !== "undefined") {
-			const savedColor = localStorage.getItem("index-primary-color");
+			const savedColor = localStorage.getItem(STORAGE_KEYS.primaryColor);
 			if (savedColor && savedColor.startsWith("#")) {
 				return savedColor;
 			}
 		}
-		return "#4f46e5";
+		return DEFAULTS.primaryColor;
 	});
 
 	useEffect(() => {
@@ -54,8 +57,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 		} else {
 			root.classList.remove("dark");
 		}
-		localStorage.setItem("index-theme-mode", themeMode);
-		localStorage.setItem("index-primary-color", primaryColor);
+		localStorage.setItem(STORAGE_KEYS.themeMode, themeMode);
+		localStorage.setItem(STORAGE_KEYS.primaryColor, primaryColor);
 	}, [themeMode, primaryColor]);
 
 	const toggleTheme = useCallback(() => {
@@ -67,7 +70,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 	}, []);
 
 	const resetPrimaryColor = useCallback(() => {
-		setPrimaryColorState("#4f46e5");
+		setPrimaryColorState(DEFAULTS.primaryColor);
 	}, []);
 
 	return (

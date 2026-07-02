@@ -1,34 +1,34 @@
 import axios from "axios";
+import { ENV, STORAGE_KEYS, ROUTES } from "@/lib/config";
 
 export const tokenStore = {
 	getAccess: (): string | null => {
 		if (typeof window === "undefined") return null;
-		return localStorage.getItem("access_token");
+		return localStorage.getItem(STORAGE_KEYS.accessToken);
 	},
 
 	getRefresh: (): string | null => {
 		if (typeof window === "undefined") return null;
-		return localStorage.getItem("refresh_token");
+		return localStorage.getItem(STORAGE_KEYS.refreshToken);
 	},
 
 	set: (access: string, refresh: string): void => {
 		if (typeof window === "undefined") return;
-		localStorage.setItem("access_token", access);
-		localStorage.setItem("refresh_token", refresh);
-		document.cookie = `access_token=${access}; path=/; SameSite=Strict; max-age=604800`;
+		localStorage.setItem(STORAGE_KEYS.accessToken, access);
+		localStorage.setItem(STORAGE_KEYS.refreshToken, refresh);
+		document.cookie = `${STORAGE_KEYS.accessToken}=${access}; path=/; SameSite=Strict; max-age=604800`;
 	},
 
 	clear: (): void => {
 		if (typeof window === "undefined") return;
-		localStorage.removeItem("access_token");
-		localStorage.removeItem("refresh_token");
-		document.cookie =
-			"access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Strict";
+		localStorage.removeItem(STORAGE_KEYS.accessToken);
+		localStorage.removeItem(STORAGE_KEYS.refreshToken);
+		document.cookie = `${STORAGE_KEYS.accessToken}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Strict`;
 	},
 };
 
 const api = axios.create({
-	baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api",
+	baseURL: ENV.apiUrl,
 	headers: {
 		"Content-Type": "application/json",
 	},
@@ -54,9 +54,8 @@ api.interceptors.response.use(
 			tokenStore.clear();
 
 			if (typeof window !== "undefined") {
-				const publicPaths = ["/", "/login", "/signup"];
-				if (!publicPaths.includes(window.location.pathname)) {
-					window.location.href = "/login";
+				if (!ROUTES.publicPaths.includes(window.location.pathname)) {
+					window.location.href = ROUTES.login;
 				}
 			}
 		}

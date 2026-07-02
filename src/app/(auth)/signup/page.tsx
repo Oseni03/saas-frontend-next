@@ -11,6 +11,7 @@ import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { extractApiErrorMessage } from "@/lib/error";
 import { SignUpFormSchema } from "@/schemas";
+import { ROUTES } from "@/lib/config";
 
 export default function SignupPage() {
 	const router = useRouter();
@@ -37,7 +38,7 @@ export default function SignupPage() {
 				full_name: data.name || null,
 			},
 			{
-				onSuccess: () => router.push("/onboarding"),
+				onSuccess: () => router.push(ROUTES.onboarding),
 				onError: (err) => {
 					setApiError(
 						extractApiErrorMessage(
@@ -54,7 +55,7 @@ export default function SignupPage() {
 		<div className="min-h-screen bg-background flex items-center justify-center p-6 font-sans">
 			<div className="w-full max-w-md">
 				<Link
-					href="/"
+					href={ROUTES.home}
 					className="mb-8 inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-foreground/50 hover:text-foreground transition-colors"
 				>
 					<ArrowLeft className="w-3.5 h-3.5" />
@@ -108,7 +109,7 @@ export default function SignupPage() {
 							Already have an account?
 						</span>
 						<Link
-							href="/login"
+							href={ROUTES.login}
 							className="text-primary hover:underline font-bold uppercase"
 						>
 							Sign In &rarr;

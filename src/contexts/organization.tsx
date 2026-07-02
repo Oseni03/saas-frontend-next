@@ -4,9 +4,10 @@ import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { organizationService } from "@/lib/api-services";
 import type { OrgResponse } from "@/schemas";
+import { STORAGE_KEYS, QUERY_KEYS } from "@/lib/config";
 
-export const ORGANIZATIONS_KEY = ["organizations"] as const;
-export const ACTIVE_ORG_STORAGE_KEY = "active_organization_id";
+export const ORGANIZATIONS_KEY = QUERY_KEYS.organizations;
+export const ACTIVE_ORG_STORAGE_KEY = STORAGE_KEYS.activeOrganizationId;
 
 interface OrganizationContextValue {
 	organizations: OrgResponse[];

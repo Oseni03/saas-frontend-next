@@ -6,6 +6,7 @@ import { Suspense, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { extractApiErrorMessage } from "@/lib/error";
 import { useVerifyEmail } from "@/hooks/useAuth";
+import { ROUTES } from "@/lib/config";
 
 function VerifyEmailContent() {
 	const router = useRouter();
@@ -25,7 +26,7 @@ function VerifyEmailContent() {
 				{
 					onSuccess: () => {
 						setSuccess(true);
-						setTimeout(() => router.push("/onboarding"), 2000);
+						setTimeout(() => router.push(ROUTES.onboarding), 2000);
 					},
 					onError: (err) => {
 						setError(

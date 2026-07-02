@@ -10,13 +10,14 @@ import {
 import api from "@/lib/api";
 import { extractApiError } from "./errors";
 import type { CallOptions } from "./types";
+import { API_ENDPOINTS } from "@/lib/config";
 
 export class UserService {
 	constructor(private readonly api: AxiosInstance) {}
 
 	async getProfile(options?: CallOptions): Promise<UserResponse> {
 		try {
-			const res = await this.api.get<any>("/users/me", {
+			const res = await this.api.get<any>(API_ENDPOINTS.users.me, {
 				signal: options?.signal,
 			});
 			return snakeCaseSchema(UserResponseSchema).parse(res.data);
@@ -30,9 +31,13 @@ export class UserService {
 		options?: CallOptions,
 	): Promise<UserResponse> {
 		try {
-			const res = await this.api.patch<any>("/users/me", data, {
-				signal: options?.signal,
-			});
+			const res = await this.api.patch<any>(
+				API_ENDPOINTS.users.me,
+				data,
+				{
+					signal: options?.signal,
+				},
+			);
 			return snakeCaseSchema(UserResponseSchema).parse(res.data);
 		} catch (err) {
 			throw extractApiError(err);
@@ -44,7 +49,7 @@ export class UserService {
 		options?: CallOptions,
 	): Promise<void> {
 		try {
-			await this.api.post("/users/me/change-password", data, {
+			await this.api.post(API_ENDPOINTS.users.changePassword, data, {
 				signal: options?.signal,
 			});
 		} catch (err) {
@@ -54,7 +59,9 @@ export class UserService {
 
 	async deleteAccount(options?: CallOptions): Promise<void> {
 		try {
-			await this.api.delete("/users/me", { signal: options?.signal });
+			await this.api.delete(API_ENDPOINTS.users.me, {
+				signal: options?.signal,
+			});
 		} catch (err) {
 			throw extractApiError(err);
 		}

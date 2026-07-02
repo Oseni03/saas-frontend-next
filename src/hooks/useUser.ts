@@ -8,7 +8,9 @@ import type {
 } from "@/schemas";
 import type { AuthError } from "@/lib/auth";
 
-export const USER_KEY = ["user", "me"] as const;
+import { QUERY_KEYS } from "@/lib/config";
+
+export const USER_KEY = QUERY_KEYS.user;
 
 export function useMyProfile() {
 	return useQuery<UserResponse, AuthError>({

@@ -11,6 +11,7 @@ import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { extractApiErrorMessage } from "@/lib/error";
 import { SignInFormSchema } from "@/schemas";
+import { ROUTES } from "@/lib/config";
 
 export default function LoginPage() {
 	return (
@@ -23,7 +24,7 @@ export default function LoginPage() {
 function LoginContent() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
-	const redirectTo = searchParams.get("redirect") || "/dashboard";
+	const redirectTo = searchParams.get("redirect") || ROUTES.dashboard.root;
 	const [apiError, setApiError] = useState<string | null>(null);
 
 	const form = useZodForm(SignInFormSchema, {
@@ -55,7 +56,7 @@ function LoginContent() {
 		<div className="min-h-screen bg-background flex items-center justify-center p-6 font-sans">
 			<div className="w-full max-w-md">
 				<Link
-					href="/"
+					href={ROUTES.home}
 					className="mb-8 inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-foreground/50 hover:text-foreground transition-colors"
 				>
 					<ArrowLeft className="w-3.5 h-3.5" />
@@ -109,7 +110,7 @@ function LoginContent() {
 							Don&apos;t have an account?
 						</span>
 						<Link
-							href="/signup"
+							href={ROUTES.signup}
 							className="text-primary hover:underline font-bold uppercase"
 						>
 							Sign Up &rarr;

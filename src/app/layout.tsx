@@ -4,6 +4,7 @@ import type { Metadata, Viewport } from "next";
 import { Manrope, Inter } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/contexts/theme-control";
+import { APP, DEFAULTS } from "@/lib/config";
 
 const manrope = Manrope({
 	variable: "--font-manrope",
@@ -16,15 +17,20 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-	title: "Opticast — Turn Your YouTube Into a Podcast",
-	description:
-		"Automatically convert your YouTube uploads into high-quality podcast episodes and distribute them to Spotify, Apple, and Google.",
+	title: APP.defaultTitle,
+	description: APP.description,
 };
 
 export const viewport: Viewport = {
 	themeColor: [
-		{ media: "(prefers-color-scheme: light)", color: "#ffffff" },
-		{ media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
+		{
+			media: "(prefers-color-scheme: light)",
+			color: DEFAULTS.themeColorLight,
+		},
+		{
+			media: "(prefers-color-scheme: dark)",
+			color: DEFAULTS.themeColorDark,
+		},
 	],
 };
 

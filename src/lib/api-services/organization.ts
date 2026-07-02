@@ -14,6 +14,7 @@ import {
 	InvitationResponse,
 	InvitationSchema,
 } from "@/schemas";
+import { API_ENDPOINTS } from "@/lib/config";
 
 export const organizationService = {
 	// ── Organizations ─────────────────────────────────────────────────────
@@ -22,65 +23,52 @@ export const organizationService = {
 	 * Create a new organization
 	 */
 	create: async (data: OrgCreateRequest): Promise<OrgResponse> => {
-		const res = await api.post<any>("/organizations/", data);
+		const res = await api.post<any>(API_ENDPOINTS.organizations.root, data);
 		return snakeCaseSchema(OrgResponseSchema).parse(res.data);
 	},
 
-	/**
-	 * List organizations the current user belongs to
-	 */
 	list: async (): Promise<OrgResponse[]> => {
-		const res = await api.get<any>("/organizations/");
+		const res = await api.get<any>(API_ENDPOINTS.organizations.root);
 		return snakeCaseSchema(z.array(OrgResponseSchema)).parse(res.data);
 	},
 
-	/**
-	 * Get a specific organization by ID
-	 */
 	getOne: async (orgId: string): Promise<OrgResponse> => {
-		const res = await api.get<any>(`/organizations/${orgId}`);
+		const res = await api.get<any>(
+			`${API_ENDPOINTS.organizations.root}${orgId}`,
+		);
 		return snakeCaseSchema(OrgResponseSchema).parse(res.data);
 	},
 
-	/**
-	 * Update an organization
-	 */
 	update: async (
 		orgId: string,
 		data: OrgUpdateRequest,
 	): Promise<OrgResponse> => {
-		const res = await api.patch<any>(`/organizations/${orgId}`, data);
+		const res = await api.patch<any>(
+			`${API_ENDPOINTS.organizations.root}${orgId}`,
+			data,
+		);
 		return snakeCaseSchema(OrgResponseSchema).parse(res.data);
 	},
 
-	/**
-	 * Delete an organization
-	 */
 	remove: async (orgId: string): Promise<void> => {
-		await api.delete<any>(`/organizations/${orgId}`);
+		await api.delete<any>(`${API_ENDPOINTS.organizations.root}${orgId}`);
 	},
 
-	// ── Members ───────────────────────────────────────────────────────────
-
-	/**
-	 * List members of an organization
-	 */
 	listMembers: async (orgId: string): Promise<MembershipResponse[]> => {
-		const res = await api.get<any>(`/organizations/${orgId}/members`);
+		const res = await api.get<any>(
+			API_ENDPOINTS.organizations.members(orgId),
+		);
 		return snakeCaseSchema(z.array(MembershipResponseSchema)).parse(
 			res.data,
 		);
 	},
 
-	/**
-	 * Remove a member from organization
-	 */
 	removeMember: async (
 		orgId: string,
 		userId: string,
 	): Promise<{ message: string }> => {
 		const res = await api.delete<any>(
-			`/organizations/${orgId}/members/${userId}`,
+			API_ENDPOINTS.organizations.member(orgId, userId),
 		);
 
 		return snakeCaseSchema(
@@ -90,40 +78,31 @@ export const organizationService = {
 		).parse(res.data);
 	},
 
-	/**
-	 * Update a member's role
-	 */
 	updateMemberRole: async (
 		orgId: string,
 		userId: string,
 		data: UpdateMemberRoleRequest,
 	): Promise<MembershipResponse> => {
 		const res = await api.patch<any>(
-			`/organizations/${orgId}/members/${userId}`,
+			API_ENDPOINTS.organizations.member(orgId, userId),
 			data,
 		);
 		return snakeCaseSchema(MembershipResponseSchema).parse(res.data);
 	},
 
-	// ── Invitations ───────────────────────────────────────────────────────
-
-	/**
-	 * List pending invitations for an organization
-	 */
 	listInvitations: async (orgId: string): Promise<InvitationResponse[]> => {
-		const res = await api.get<any>(`/organizations/${orgId}/invitations`);
+		const res = await api.get<any>(
+			API_ENDPOINTS.organizations.invitations(orgId),
+		);
 		return snakeCaseSchema(z.array(InvitationSchema)).parse(res.data);
 	},
 
-	/**
-	 * Invite a member to the organization
-	 */
 	inviteMember: async (
 		orgId: string,
 		data: InviteMemberRequest,
 	): Promise<{ message: string }> => {
 		const res = await api.post<any>(
-			`/organizations/${orgId}/invitations`,
+			API_ENDPOINTS.organizations.invitations(orgId),
 			data,
 		);
 
@@ -134,15 +113,12 @@ export const organizationService = {
 		).parse(res.data);
 	},
 
-	/**
-	 * Revoke a pending invitation
-	 */
 	revokeInvitation: async (
 		orgId: string,
 		invitationId: string,
 	): Promise<{ message: string }> => {
 		const res = await api.delete<any>(
-			`/organizations/${orgId}/invitations/${invitationId}`,
+			API_ENDPOINTS.organizations.invitation(orgId, invitationId),
 		);
 
 		return snakeCaseSchema(
@@ -152,14 +128,11 @@ export const organizationService = {
 		).parse(res.data);
 	},
 
-	/**
-	 * Accept an invitation (public endpoint)
-	 */
 	acceptInvitation: async (
 		data: AcceptInvitationRequest,
 	): Promise<OrgResponse> => {
 		const res = await api.post<any>(
-			"/organizations/invitations/accept",
+			API_ENDPOINTS.organizations.acceptInvitation,
 			data,
 		);
 

@@ -34,6 +34,7 @@ No test framework is installed. No typecheck script is configured (use `npx tsc 
 - **Components**: `src/components/ui/` (shadcn), `src/components/providers/` (QueryProvider), feature-specific dirs
 - **API layer**: Axios instance → `src/lib/api-services/` (auth, mfa, oauth, organization, billing, admin, notification, user, health)
 - **Hooks**: `src/hooks/useAuth.ts` (login, signup, refresh, verify-email, forgot/reset-password, me, update-me, logout, deactivate), `use-mobile.ts`
+- **Config**: `src/lib/config.ts` — single source of truth for app identity (APP), env vars (ENV), routes (ROUTES), API endpoints (API_ENDPOINTS), storage keys (STORAGE_KEYS), defaults (DEFAULTS), and query keys (QUERY_KEYS). Import from `@/lib/config` instead of hardcoding strings or accessing `process.env` directly.
 - **Schemas**: Zod validation objects in `src/schemas/`
 - **Types**: shared TS types in `src/types/`
 

@@ -12,8 +12,9 @@ import type {
 } from "@/schemas";
 import type { AuthError } from "@/lib/auth";
 import type { SignupResponse } from "@/lib/auth";
+import { ROUTES, QUERY_KEYS } from "@/lib/config";
 
-export const ME_KEY = ["auth", "me"] as const;
+export const ME_KEY = QUERY_KEYS.me;
 
 export function useLogin() {
 	return useMutation<TokenPair, AuthError, LoginRequest>({
@@ -39,7 +40,7 @@ export function useLogout() {
 		mutationFn: () => authService.logout(),
 		onSuccess: () => {
 			if (typeof window !== "undefined") {
-				window.location.href = "/login";
+				window.location.href = ROUTES.login;
 			}
 		},
 	});

@@ -5,13 +5,7 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { ThemeToggle } from "../theme-toggle";
 import { Button } from "@/components/ui/button";
-
-export const NAV_LINKS = [
-	{ label: "Features", href: "#features" },
-	{ label: "Pricing", href: "#pricing" },
-	{ label: "Examples", href: "#case-studies" },
-	{ label: "Help Center", href: "#docs" },
-];
+import { NAV_LINKS } from "@/lib/config";
 
 export default function Navbar() {
 	const [activeLink, setActiveLink] = useState("#features");
