@@ -8,7 +8,6 @@ export enum MemberRole {
 export enum PlanTier {
 	FREE = "free",
 	PRO = "pro",
-	BUSINESS = "business",
 	ENTERPRISE = "enterprise",
 }
 

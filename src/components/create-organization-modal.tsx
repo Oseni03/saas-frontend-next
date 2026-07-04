@@ -159,11 +159,6 @@ export function CreateOrganizationModal({
 														desc: "Advanced features for growing teams",
 													},
 													{
-														value: "business" as PlanTier,
-														label: "Business",
-														desc: "Full suite for organizations",
-													},
-													{
 														value: "enterprise" as PlanTier,
 														label: "Enterprise",
 														desc: "Custom solutions and support",

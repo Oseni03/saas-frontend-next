@@ -45,7 +45,7 @@ export const PRICING_PLANS: PricingPlan[] = [
 			"Custom solutions with dedicated support and enterprise-grade infrastructure.",
 		popular: false,
 		features: [
-			"Everything in Business",
+			"Everything in Pro",
 			"Custom integrations",
 			"Dedicated support team",
 			"SLA guarantee",
