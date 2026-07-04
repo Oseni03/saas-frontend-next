@@ -71,6 +71,7 @@ const roleBadgeVariant = {
 	[MemberRole.OWNER]: "default" as const,
 	[MemberRole.ADMIN]: "secondary" as const,
 	[MemberRole.MEMBER]: "outline" as const,
+	[MemberRole.VIEWER]: "ghost" as const,
 };
 
 function getInitials(name?: string, email?: string) {
@@ -401,6 +402,13 @@ export default function MembersPage() {
 													>
 														MEMBER
 													</SelectItem>
+													<SelectItem
+														value={
+															MemberRole.VIEWER
+														}
+													>
+														VIEWER
+													</SelectItem>
 												</SelectContent>
 											</Select>
 											<FormMessage />
@@ -672,27 +680,41 @@ function MemberRow({
 							<DropdownMenuContent align="end" className="w-40">
 								{member.role !== MemberRole.OWNER && (
 									<>
-										<DropdownMenuItem
-											onClick={() => {
-												if (
-													member.role ===
-													MemberRole.MEMBER
-												) {
+										{member.role === MemberRole.VIEWER && (
+											<DropdownMenuItem
+												onClick={() =>
+													onRoleChange(
+														member.user_id,
+														MemberRole.MEMBER,
+													)
+												}
+											>
+												Make MEMBER
+											</DropdownMenuItem>
+										)}
+										{member.role === MemberRole.MEMBER && (
+											<DropdownMenuItem
+												onClick={() =>
 													onRoleChange(
 														member.user_id,
 														MemberRole.ADMIN,
-													);
-												} else {
+													)
+												}
+											>
+												Make ADMIN
+											</DropdownMenuItem>
+										)}
+										{(member.role === MemberRole.ADMIN) && (
+											<DropdownMenuItem
+												onClick={() =>
 													setConfirmRole(
 														MemberRole.MEMBER,
-													);
+													)
 												}
-											}}
-										>
-											{member.role === MemberRole.MEMBER
-												? "Make ADMIN"
-												: "Make MEMBER"}
-										</DropdownMenuItem>
+											>
+												Make MEMBER
+											</DropdownMenuItem>
+										)}
 										{canPromoteToOwner && (
 											<DropdownMenuItem
 												onClick={() =>

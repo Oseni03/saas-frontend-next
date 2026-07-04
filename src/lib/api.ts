@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ENV, STORAGE_KEYS, ROUTES } from "@/lib/config";
+import { ENV, STORAGE_KEYS, ROUTES, PROJECT } from "@/lib/config";
 
 export const tokenStore = {
 	getAccess: (): string | null => {
@@ -38,7 +38,7 @@ api.interceptors.request.use(
 	(config) => {
 		const token = tokenStore.getAccess();
 		if (token) {
-			config.headers.Authorization = `Bearer ${token}`;
+			config.headers.Authorization = `${PROJECT.tokenType} ${token}`;
 		}
 		return config;
 	},

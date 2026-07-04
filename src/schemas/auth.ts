@@ -1,17 +1,29 @@
 import { z } from "zod";
+import { PROJECT } from "@/lib/config";
+
+const {
+	minLength,
+	maxLength,
+	requireUppercase,
+	requireDigit,
+} = PROJECT.password;
 
 export const RegisterRequestSchema = z.object({
 	email: z.email(),
-	password: z
-		.string()
-		.min(8)
-		.max(128)
-		.refine((val) => /[A-Z]/.test(val), {
-			message: "Password must contain at least one uppercase letter.",
-		})
-		.refine((val) => /\d/.test(val), {
-			message: "Password must contain at least one digit.",
-		}),
+	password: (() => {
+		let schema = z.string().min(minLength).max(maxLength);
+		if (requireUppercase) {
+			schema = schema.refine((val) => /[A-Z]/.test(val), {
+				message: "Password must contain at least one uppercase letter.",
+			});
+		}
+		if (requireDigit) {
+			schema = schema.refine((val) => /\d/.test(val), {
+				message: "Password must contain at least one digit.",
+			});
+		}
+		return schema;
+	})(),
 	full_name: z.string().max(255).nullable().optional(),
 });
 
@@ -23,7 +35,7 @@ export const LoginRequestSchema = z.object({
 export const TokenPairSchema = z.object({
 	access_token: z.string(),
 	refresh_token: z.string(),
-	token_type: z.literal("bearer").default("bearer"),
+	token_type: z.literal(PROJECT.tokenType).default(PROJECT.tokenType),
 });
 
 export const RefreshRequestSchema = z.object({
@@ -40,28 +52,32 @@ export const PasswordResetRequestSchema = z.object({
 
 export const PasswordResetConfirmSchema = z.object({
 	token: z.string(),
-	new_password: z
-		.string()
-		.min(8)
-		.max(128)
-		.refine((val) => /[A-Z]/.test(val), {
-			message: "Password must contain at least one uppercase letter.",
-		})
-		.refine((val) => /\d/.test(val), {
-			message: "Password must contain at least one digit.",
-		}),
+	new_password: (() => {
+		let schema = z.string().min(minLength).max(maxLength);
+		if (requireUppercase) {
+			schema = schema.refine((val) => /[A-Z]/.test(val), {
+				message: "Password must contain at least one uppercase letter.",
+			});
+		}
+		if (requireDigit) {
+			schema = schema.refine((val) => /\d/.test(val), {
+				message: "Password must contain at least one digit.",
+			});
+		}
+		return schema;
+	})(),
 });
 
 export const LoginResponseSchema = z.object({
 	access_token: z.string(),
 	refresh_token: z.string(),
-	token_type: z.literal("bearer").default("bearer"),
+	token_type: z.literal(PROJECT.tokenType).default(PROJECT.tokenType),
 });
 
 export const RegisterResponseSchema = z.object({
 	access_token: z.string(),
 	refresh_token: z.string(),
-	token_type: z.literal("bearer").default("bearer"),
+	token_type: z.literal(PROJECT.tokenType).default(PROJECT.tokenType),
 	id: z.string(),
 	email: z.email(),
 	full_name: z.string().nullable().optional(),

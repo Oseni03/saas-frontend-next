@@ -15,13 +15,13 @@ import {
 } from "@/schemas";
 import { extractApiError, type AuthError } from "./errors";
 import type { CallOptions, TokenStore } from "./types";
-import { API_ENDPOINTS } from "@/lib/config";
+import { API_ENDPOINTS, PROJECT } from "@/lib/config";
 
 interface SignupResponse {
 	user: UserResponse;
 	access_token: string;
 	refresh_token: string;
-	token_type: "bearer";
+	token_type: typeof PROJECT.tokenType;
 }
 
 import api, { tokenStore } from "@/lib/api";

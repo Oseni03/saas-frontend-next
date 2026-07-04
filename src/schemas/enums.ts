@@ -1,7 +1,8 @@
 export enum MemberRole {
-	OWNER = "owner",
-	ADMIN = "admin",
+	VIEWER = "viewer",
 	MEMBER = "member",
+	ADMIN = "admin",
+	OWNER = "owner",
 }
 
 export enum PlanTier {
