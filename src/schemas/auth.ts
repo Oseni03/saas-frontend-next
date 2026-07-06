@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { PROJECT } from "@/lib/config";
+import { UserResponseSchema } from "./user";
 
 const {
 	minLength,
@@ -72,6 +73,7 @@ export const LoginResponseSchema = z.object({
 	access_token: z.string(),
 	refresh_token: z.string(),
 	token_type: z.literal(PROJECT.tokenType).default(PROJECT.tokenType),
+	user: UserResponseSchema.optional(),
 });
 
 export const RegisterResponseSchema = z.object({
@@ -86,6 +88,11 @@ export const RegisterResponseSchema = z.object({
 	is_active: z.boolean(),
 	mfa_enabled: z.boolean(),
 	created_at: z.string(),
+});
+
+export const MfaPendingResponseSchema = z.object({
+	mfa_pending: z.string(),
+	expires_in: z.number(),
 });
 
 // ======================
@@ -128,6 +135,7 @@ export type PasswordResetRequest = z.infer<typeof PasswordResetRequestSchema>;
 export type PasswordResetConfirm = z.infer<typeof PasswordResetConfirmSchema>;
 export type LoginResponse = z.infer<typeof LoginResponseSchema>;
 export type RegisterResponse = z.infer<typeof RegisterResponseSchema>;
+export type MfaPendingResponse = z.infer<typeof MfaPendingResponseSchema>;
 
 // Form value types
 export type SignUpFormValues = z.infer<typeof SignUpFormSchema>;

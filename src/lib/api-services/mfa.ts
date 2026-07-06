@@ -29,8 +29,11 @@ export const mfaService = {
 		await api.post<any>(API_ENDPOINTS.mfa.disable, { code });
 	},
 
-	validate: async (code: string): Promise<TokenPair> => {
-		const res = await api.post<any>(API_ENDPOINTS.mfa.validate, { code });
+	validate: async (code: string, pendingToken?: string): Promise<TokenPair> => {
+		const res = await api.post<any>(
+			API_ENDPOINTS.mfa.validate,
+			{ code, mfa_pending: pendingToken },
+		);
 
 		return snakeCaseSchema(TokenPairSchema).parse(res.data);
 	},

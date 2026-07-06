@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { MembershipOrgResponseSchema } from "./organization";
 
 export const UserResponseSchema = z.object({
 	id: z.string(),
@@ -9,6 +10,7 @@ export const UserResponseSchema = z.object({
 	is_active: z.boolean(),
 	mfa_enabled: z.boolean(),
 	created_at: z.iso.datetime(), // ISO datetime string
+	organizations: z.array(MembershipOrgResponseSchema).optional().default([]),
 });
 
 export const UserUpdateRequestSchema = z.object({

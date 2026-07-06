@@ -9,6 +9,7 @@ import type {
 import type { AuthError } from "@/lib/auth";
 
 import { QUERY_KEYS } from "@/lib/config";
+import { ME_KEY } from "./useAuth";
 
 export const USER_KEY = QUERY_KEYS.user;
 
@@ -27,6 +28,7 @@ export function useUpdateProfile() {
 			userService.updateProfile(data),
 		onSuccess: () => {
 			qc.invalidateQueries({ queryKey: USER_KEY });
+			qc.invalidateQueries({ queryKey: ME_KEY });
 		},
 	});
 }

@@ -23,10 +23,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { ORGANIZATIONS_KEY, useOrganization } from "@/contexts/organization";
+import { useOrganization } from "@/contexts/organization";
 import { useZodForm } from "@/hooks/useZodForm";
+import { ME_KEY } from "@/hooks/useAuth";
 import { billingService, organizationService } from "@/lib/api-services";
-import type { PlanTier } from "@/schemas";
+import type { PlanTier, UserResponse } from "@/schemas";
 import { OrgCreateFormSchema } from "@/schemas";
 
 interface CreateOrganizationModalProps {
@@ -70,7 +71,13 @@ export function CreateOrganizationModal({
 		onSuccess: (org) => {
 			if (!org) return;
 
-			queryClient.invalidateQueries({ queryKey: ORGANIZATIONS_KEY });
+			queryClient.setQueryData<UserResponse>(ME_KEY, (old) => {
+				if (!old) return old;
+				return {
+					...old,
+					organizations: [...(old.organizations ?? []), org],
+				};
+			});
 			setActiveOrg(org);
 			onOpenChange(false);
 			form.reset({ name: "", plan: "free" as PlanTier });

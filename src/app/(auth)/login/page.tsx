@@ -3,9 +3,10 @@
 import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import SignInForm from "@/components/auth/signin-form";
-import { useLogin } from "@/hooks/useAuth";
+import { ME_KEY, useLogin } from "@/hooks/useAuth";
 import { useZodForm } from "@/hooks/useZodForm";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
@@ -24,6 +25,7 @@ export default function LoginPage() {
 function LoginContent() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
+	const queryClient = useQueryClient();
 	const redirectTo = searchParams.get("redirect") || ROUTES.dashboard.root;
 	const [apiError, setApiError] = useState<string | null>(null);
 
@@ -39,7 +41,18 @@ function LoginContent() {
 		loginMutation.mutate(
 			{ email: data.email, password: data.password },
 			{
-				onSuccess: () => router.push(redirectTo),
+				onSuccess: (result) => {
+					if ("mfa_pending" in result) {
+						router.push(
+							`${ROUTES.mfaChallenge}?pending_token=${encodeURIComponent(result.mfa_pending)}`,
+						);
+						return;
+					}
+					if (result.user) {
+						queryClient.setQueryData(ME_KEY, result.user);
+					}
+					router.push(redirectTo);
+				},
 				onError: (err) => {
 					setApiError(
 						extractApiErrorMessage(

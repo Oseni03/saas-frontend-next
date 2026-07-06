@@ -3,9 +3,10 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import SignUpForm from "@/components/auth/signup-form";
-import { useSignup } from "@/hooks/useAuth";
+import { ME_KEY, useSignup } from "@/hooks/useAuth";
 import { useZodForm } from "@/hooks/useZodForm";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
@@ -15,6 +16,7 @@ import { ROUTES } from "@/lib/config";
 
 export default function SignupPage() {
 	const router = useRouter();
+	const queryClient = useQueryClient();
 	const [apiError, setApiError] = useState<string | null>(null);
 
 	const form = useZodForm(SignUpFormSchema, {
@@ -38,7 +40,10 @@ export default function SignupPage() {
 				full_name: data.name || null,
 			},
 			{
-				onSuccess: () => router.push(ROUTES.onboarding),
+				onSuccess: (result) => {
+					queryClient.setQueryData(ME_KEY, result.user);
+					router.push(ROUTES.onboarding);
+				},
 				onError: (err) => {
 					setApiError(
 						extractApiErrorMessage(

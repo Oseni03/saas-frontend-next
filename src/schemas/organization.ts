@@ -36,12 +36,19 @@ export const BillingInitSchemaSchema = z.object({
 	callback_url: z.string().url(),
 });
 
+const planEnum = z.enum(PlanTier);
+const planSchema = z.preprocess(
+	(val) => (typeof val === "string" ? val.toLowerCase() : val),
+	planEnum,
+);
+
 export const OrgResponseSchema = z.object({
 	id: z.string(),
 	name: z.string(),
 	slug: z.string(),
 	logo_url: z.string().nullable(),
-	plan: z.enum(PlanTier),
+	plan: planSchema,
+	role: z.enum(MemberRole).optional(),
 	created_at: z.iso.datetime(), // ISO string from datetime
 });
 
@@ -56,7 +63,7 @@ export const MembershipResponseSchema = z.object({
 });
 
 export const BillingVerifyResponseSchema = z.object({
-	plan: z.enum(PlanTier),
+	plan: planSchema,
 	organization_id: z.string(),
 });
 

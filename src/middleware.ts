@@ -37,6 +37,7 @@ export const config = {
 		"/dashboard/:path*",
 		"/invitations/:path*",
 		"/onboarding/:path*",
+		"/mfa/:path*",
 		"/login",
 		"/signup",
 		"/forgot-password",

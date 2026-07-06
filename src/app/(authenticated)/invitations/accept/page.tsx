@@ -8,10 +8,9 @@ import { CheckCircle2, Loader2, XCircle } from "lucide-react";
 
 import { extractApiErrorMessage } from "@/lib/error";
 import { organizationService } from "@/lib/api-services";
-import {
-	ACTIVE_ORG_STORAGE_KEY,
-	ORGANIZATIONS_KEY,
-} from "@/contexts/organization";
+import { ACTIVE_ORG_STORAGE_KEY } from "@/contexts/organization";
+import { ME_KEY } from "@/hooks/useAuth";
+import type { UserResponse } from "@/schemas";
 import { Button } from "@/components/ui/button";
 
 export default function AcceptInvitationPage() {
@@ -51,7 +50,14 @@ function AcceptContent() {
 			.then((org) => {
 				if (cancelled) return;
 				setState({ status: "success" });
-				queryClient.invalidateQueries({ queryKey: ORGANIZATIONS_KEY });
+				queryClient.setQueryData<UserResponse>(ME_KEY, (old) => {
+					if (!old) return old;
+					if (old.organizations?.some((o) => o.id === org.id)) return old;
+					return {
+						...old,
+						organizations: [...(old.organizations ?? []), org],
+					};
+				});
 				localStorage.setItem(ACTIVE_ORG_STORAGE_KEY, org.id);
 				setTimeout(() => router.push("/dashboard"), 1500);
 			})

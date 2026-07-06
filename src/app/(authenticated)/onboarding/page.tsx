@@ -6,24 +6,13 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { OnboardingForm } from "@/components/onboarding/onboarding-form";
-import {
-	ORGANIZATIONS_KEY,
-	OrganizationProvider,
-	useOrganization,
-} from "@/contexts/organization";
-import { type OrgResponse } from "@/schemas";
+import { useOrganization } from "@/contexts/organization";
+import { ME_KEY } from "@/hooks/useAuth";
+import type { UserResponse } from "@/schemas";
 import { extractApiErrorMessage } from "@/lib/error";
 import { billingService, organizationService } from "@/lib/api-services";
 
 export default function OnboardingPage() {
-	return (
-		<OrganizationProvider>
-			<OnboardingContent />
-		</OrganizationProvider>
-	);
-}
-
-function OnboardingContent() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const queryClient = useQueryClient();
@@ -48,13 +37,14 @@ function OnboardingContent() {
 				);
 				setActiveOrg(org);
 				setStatus("verified");
-				queryClient.setQueryData<OrgResponse[]>(
-					ORGANIZATIONS_KEY,
-					(old = []) => {
-						if (old.some((o) => o.id === org.id)) return old;
-						return [...old, org];
-					},
-				);
+				queryClient.setQueryData<UserResponse>(ME_KEY, (old) => {
+					if (!old) return old;
+					if (old.organizations?.some((o) => o.id === org.id)) return old;
+					return {
+						...old,
+						organizations: [...(old.organizations ?? []), org],
+					};
+				});
 				setTimeout(() => router.push("/dashboard"), 1500);
 			})
 			.catch((err: unknown) => {

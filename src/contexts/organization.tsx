@@ -1,12 +1,10 @@
 "use client";
 
 import { createContext, useContext, useEffect, useRef, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { organizationService } from "@/lib/api-services";
 import type { OrgResponse } from "@/schemas";
-import { STORAGE_KEYS, QUERY_KEYS } from "@/lib/config";
+import { STORAGE_KEYS } from "@/lib/config";
+import { useMe } from "@/hooks/useAuth";
 
-export const ORGANIZATIONS_KEY = QUERY_KEYS.organizations;
 export const ACTIVE_ORG_STORAGE_KEY = STORAGE_KEYS.activeOrganizationId;
 
 interface OrganizationContextValue {
@@ -29,21 +27,8 @@ export function OrganizationProvider({
 	const [activeOrgId, setActiveOrgId] = useState<string | null>(null);
 	const initialized = useRef(false);
 
-	const {
-		data: organizations = [],
-		isLoading,
-		isFetched,
-		isError,
-		error,
-	} = useQuery({
-		queryKey: ORGANIZATIONS_KEY,
-		queryFn: () => organizationService.list(),
-		staleTime: 1000 * 60 * 5,
-	});
-
-	useEffect(() => {
-		console.log({ isFetched, isError, error, organizations });
-	}, [isFetched, isError, error, organizations]);
+	const { data: me, isLoading, isFetched } = useMe();
+	const organizations = me?.organizations ?? [];
 
 	useEffect(() => {
 		if (organizations.length === 0 || initialized.current) return;

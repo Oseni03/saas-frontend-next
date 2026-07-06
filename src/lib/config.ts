@@ -43,6 +43,7 @@ export const ROUTES = {
 	verifyEmail: "/verify-email",
 	onboarding: "/onboarding",
 	invitations: "/invitations",
+	mfaChallenge: "/mfa/challenge",
 	about: "/about",
 	privacy: "/privacy",
 
@@ -68,6 +69,7 @@ export const ROUTES = {
 			this.signup,
 			this.forgotPassword,
 			this.resetPassword,
+			this.mfaChallenge,
 		];
 	},
 

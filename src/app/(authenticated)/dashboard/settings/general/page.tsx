@@ -14,10 +14,11 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { ORGANIZATIONS_KEY, useOrganization } from "@/contexts/organization";
+import { useOrganization } from "@/contexts/organization";
 import { useZodForm } from "@/hooks/useZodForm";
 import { organizationService } from "@/lib/api-services";
-import { OrgUpdateFormSchema } from "@/schemas";
+import { ME_KEY } from "@/hooks/useAuth";
+import { OrgUpdateFormSchema, type UserResponse } from "@/schemas";
 
 export default function GeneralPage() {
 	const { activeOrg, setActiveOrg } = useOrganization();
@@ -40,7 +41,15 @@ export default function GeneralPage() {
 		onSuccess: (updatedOrg) => {
 			toast.success("Organization updated");
 			setActiveOrg(updatedOrg);
-			queryClient.invalidateQueries({ queryKey: ORGANIZATIONS_KEY });
+			queryClient.setQueryData<UserResponse>(ME_KEY, (old) => {
+				if (!old) return old;
+				return {
+					...old,
+					organizations: old.organizations?.map((o) =>
+						o.id === updatedOrg.id ? { ...o, ...updatedOrg } : o,
+					),
+				};
+			});
 		},
 		onError: () => {},
 	});

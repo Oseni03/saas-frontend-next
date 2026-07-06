@@ -2,11 +2,11 @@
 
 ## Base
 
-| Property | Value |
-|---|---|
-| Base URL | `NEXT_PUBLIC_API_URL` (default `http://localhost:8000/api/v1`) |
-| Content-Type | `application/json` |
-| Auth header | `Authorization: bearer <access_token>` |
+| Property      | Value                                                                                               |
+| ------------- | --------------------------------------------------------------------------------------------------- |
+| Base URL      | `NEXT_PUBLIC_API_URL` (default `http://localhost:8000/api/v1`)                                      |
+| Content-Type  | `application/json`                                                                                  |
+| Auth header   | `Authorization: bearer <access_token>`                                                              |
 | Token storage | `access_token` in localStorage + cookie (SameSite=Strict, 7d); `refresh_token` in localStorage only |
 
 ## Key Convention
@@ -15,10 +15,10 @@ The frontend sends camelCase JSON, but expects snake_case JSON in responses. All
 
 ## Enums
 
-| Enum | Values |
-|---|---|
-| `MemberRole` | `"viewer"` \| `"member"` \| `"admin"` \| `"owner"` |
-| `PlanTier` | `"free"` \| `"pro"` \| `"enterprise"` |
+| Enum               | Values                                                    |
+| ------------------ | --------------------------------------------------------- |
+| `MemberRole`       | `"viewer"` \| `"member"` \| `"admin"` \| `"owner"`        |
+| `PlanTier`         | `"free"` \| `"pro"` \| `"enterprise"`                     |
 | `InvitationStatus` | `"pending"` \| `"accepted"` \| `"expired"` \| `"revoked"` |
 
 ## Pagination
@@ -32,58 +32,87 @@ Endpoints that accept pagination use params `?page=1&page_size=20` or `?limit=20
 ### POST `/auth/register`
 
 **Request:**
+
 ```json
 {
-  "email": "user@example.com",
-  "password": "Str0ngPass!",
-  "full_name": "Jane Doe"
+	"email": "user@example.com",
+	"password": "Str0ngPass!",
+	"full_name": "Jane Doe"
 }
 ```
 
 Password rules: min 8 / max 128 chars, requires ≥1 uppercase, ≥1 digit.
 
 **Response (201):** `RegisterResponse`
+
 ```json
 {
-  "access_token": "eyJ...",
-  "refresh_token": "eyJ...",
-  "token_type": "bearer",
-  "id": "uuid",
-  "email": "user@example.com",
-  "full_name": "Jane Doe",
-  "avatar_url": null,
-  "is_verified": false,
-  "is_active": true,
-  "mfa_enabled": false,
-  "created_at": "2026-07-04T12:00:00Z"
+	"access_token": "eyJ...",
+	"refresh_token": "eyJ...",
+	"token_type": "bearer",
+	"user": {
+		"id": "uuid",
+		"email": "user@example.com",
+		"full_name": "Jane Doe",
+		"avatar_url": null,
+		"is_verified": false,
+		"is_active": true,
+		"mfa_enabled": false,
+		"created_at": "2026-07-04T12:00:00Z"
+	}
 }
 ```
 
 ### POST `/auth/login`
 
 **Request:**
+
 ```json
 {
-  "email": "user@example.com",
-  "password": "Str0ngPass!"
+	"email": "user@example.com",
+	"password": "Str0ngPass!"
 }
 ```
 
-**Response (200):** `TokenPair`
+**Response (200) — no MFA:**
+
 ```json
 {
-  "access_token": "eyJ...",
-  "refresh_token": "eyJ...",
-  "token_type": "bearer"
+	"access_token": "eyJ...",
+	"refresh_token": "eyJ...",
+	"token_type": "bearer",
+	"user": {
+		"id": "uuid",
+		"email": "user@example.com",
+		"full_name": "Jane Doe",
+		"avatar_url": null,
+		"is_verified": true,
+		"is_active": true,
+		"mfa_enabled": false,
+		"created_at": "2026-07-04T12:00:00Z",
+		"organizations": []
+	}
 }
 ```
+
+**Response (200) — MFA enabled:** `MfaPendingResponse`
+
+```json
+{
+	"mfa_pending": "eyJ...",
+	"expires_in": 300
+}
+```
+
+The frontend redirects to `/mfa/challenge?pending_token=<mfa_pending>` when this is received. After the user provides a valid TOTP code, call `POST /mfa/validate`.
 
 ### POST `/auth/refresh`
 
 **Request:**
+
 ```json
 {
-  "refresh_token": "eyJ..."
+	"refresh_token": "eyJ..."
 }
 ```
 
@@ -92,9 +121,10 @@ Password rules: min 8 / max 128 chars, requires ≥1 uppercase, ≥1 digit.
 ### POST `/auth/logout`
 
 **Request:**
+
 ```json
 {
-  "refresh_token": "eyJ..."
+	"refresh_token": "eyJ..."
 }
 ```
 
@@ -103,9 +133,10 @@ Password rules: min 8 / max 128 chars, requires ≥1 uppercase, ≥1 digit.
 ### POST `/auth/verify-email`
 
 **Request:**
+
 ```json
 {
-  "token": "verification-token-string"
+	"token": "verification-token-string"
 }
 ```
 
@@ -114,26 +145,29 @@ Password rules: min 8 / max 128 chars, requires ≥1 uppercase, ≥1 digit.
 ### POST `/auth/forgot-password`
 
 **Request:**
+
 ```json
 {
-  "email": "user@example.com"
+	"email": "user@example.com"
 }
 ```
 
 **Response (200):**
+
 ```json
 {
-  "message": "If the email exists, a reset link has been sent."
+	"message": "If the email exists, a reset link has been sent."
 }
 ```
 
 ### POST `/auth/reset-password`
 
 **Request:**
+
 ```json
 {
-  "token": "reset-token-string",
-  "new_password": "NewStr0ng!Pass"
+	"token": "reset-token-string",
+	"new_password": "NewStr0ng!Pass"
 }
 ```
 
@@ -143,7 +177,7 @@ Password rules: min 8 / max 128 chars, requires ≥1 uppercase, ≥1 digit.
 
 **Headers:** `Authorization: bearer <token>`
 
-**Response (200):** `UserResponse`
+**Response (200):** `UserResponse` (includes `organizations` array)
 
 ---
 
@@ -156,10 +190,11 @@ Returns `UserResponse`.
 ### PATCH `/users/me`
 
 **Request:**
+
 ```json
 {
-  "full_name": "New Name",
-  "avatar_url": "https://example.com/avatar.png"
+	"full_name": "New Name",
+	"avatar_url": "https://example.com/avatar.png"
 }
 ```
 
@@ -170,10 +205,11 @@ Both fields nullable/optional.
 ### POST `/users/me/change-password`
 
 **Request:**
+
 ```json
 {
-  "current_password": "OldPass123!",
-  "new_password": "NewPass456!"
+	"current_password": "OldPass123!",
+	"new_password": "NewPass456!"
 }
 ```
 
@@ -188,74 +224,107 @@ Both fields nullable/optional.
 ## Shared Response Shapes
 
 **`UserResponse`:**
+
 ```json
 {
-  "id": "uuid",
-  "email": "user@example.com",
-  "full_name": "Jane Doe",
-  "avatar_url": null,
-  "is_verified": true,
-  "is_active": true,
-  "mfa_enabled": false,
-  "created_at": "2026-07-04T12:00:00Z"
+	"id": "uuid",
+	"email": "user@example.com",
+	"full_name": "Jane Doe",
+	"avatar_url": null,
+	"is_verified": true,
+	"is_active": true,
+	"mfa_enabled": false,
+	"created_at": "2026-07-04T12:00:00Z",
+	"organizations": [
+		{
+			"id": "uuid",
+			"name": "Acme Corp",
+			"slug": "acme-corp",
+			"logo_url": null,
+			"plan": "FREE",
+			"role": "OWNER",
+			"created_at": "2026-07-04T12:00:00Z"
+		}
+	]
 }
 ```
 
-**`OrgResponse`:**
+**`MembershipOrgResponse`:** (org with user's membership role — used in `UserResponse.organizations`, login, and `/auth/me`)
+
 ```json
 {
-  "id": "uuid",
-  "name": "Acme Corp",
-  "slug": "acme-corp",
-  "logo_url": null,
-  "plan": "free",
-  "created_at": "2026-07-04T12:00:00Z"
+	"id": "uuid",
+	"name": "Acme Corp",
+	"slug": "acme-corp",
+	"logo_url": null,
+	"plan": "FREE",
+	"role": "OWNER",
+	"created_at": "2026-07-04T12:00:00Z"
+}
+```
+
+**`OrgResponse`:** (standalone org, no role)
+
+```json
+{
+	"id": "uuid",
+	"name": "Acme Corp",
+	"slug": "acme-corp",
+	"logo_url": null,
+	"plan": "FREE",
+	"created_at": "2026-07-04T12:00:00Z"
 }
 ```
 
 **`MembershipResponse`:**
+
 ```json
 {
-  "user_id": "uuid",
-  "organization_id": "uuid",
-  "role": "admin",
-  "created_at": "2026-07-04T12:00:00Z",
-  "name": "Jane Doe",
-  "email": "jane@example.com",
-  "avatar_url": "https://..."
+	"user_id": "uuid",
+	"organization_id": "uuid",
+	"role": "admin",
+	"created_at": "2026-07-04T12:00:00Z",
+	"name": "Jane Doe",
+	"email": "jane@example.com",
+	"avatar_url": "https://..."
 }
 ```
 
 **`InvitationResponse`:**
+
 ```json
 {
-  "id": "uuid",
-  "organization_id": "uuid",
-  "email": "invited@example.com",
-  "status": "pending",
-  "expires_at": "2026-07-11T12:00:00Z"
+	"id": "uuid",
+	"organization_id": "uuid",
+	"email": "invited@example.com",
+	"status": "pending",
+	"expires_at": "2026-07-11T12:00:00Z"
 }
 ```
 
 **`NotificationResponse`:**
+
 ```json
 {
-  "id": "uuid",
-  "title": "Welcome!",
-  "body": "Thanks for joining.",
-  "link": null,
-  "is_read": false,
-  "read_at": null,
-  "meta": null,
-  "created_at": "2026-07-04T12:00:00Z"
+	"id": "uuid",
+	"title": "Welcome!",
+	"body": "Thanks for joining.",
+	"link": null,
+	"is_read": false,
+	"read_at": null,
+	"meta": null,
+	"created_at": "2026-07-04T12:00:00Z"
 }
 ```
 
 **`NotificationListResponse`:**
+
 ```json
 {
-  "items": [ /* NotificationResponse[] */ ],
-  "unread_count": 1
+	"items": [
+		/* NotificationResponse[] */
+	],
+	"unread_count": 1
 }
 ```
 
@@ -266,9 +335,10 @@ Both fields nullable/optional.
 ### POST `/organizations/`
 
 **Request:**
+
 ```json
 {
-  "name": "Acme Corp"
+	"name": "Acme Corp"
 }
 ```
 
@@ -285,10 +355,11 @@ Both fields nullable/optional.
 ### PATCH `/organizations/:orgId`
 
 **Request:**
+
 ```json
 {
-  "name": "Acme Corp Rebranded",
-  "logo_url": "https://example.com/logo.png"
+	"name": "Acme Corp Rebranded",
+	"logo_url": "https://example.com/logo.png"
 }
 ```
 
@@ -307,18 +378,20 @@ Both optional/nullable.
 ### DELETE `/organizations/:orgId/members/:userId`
 
 **Response (200):**
+
 ```json
 {
-  "message": "Member removed successfully"
+	"message": "Member removed successfully"
 }
 ```
 
 ### PATCH `/organizations/:orgId/members/:userId`
 
 **Request:**
+
 ```json
 {
-  "role": "admin"
+	"role": "admin"
 }
 ```
 
@@ -331,37 +404,41 @@ Both optional/nullable.
 ### POST `/organizations/:orgId/invitations`
 
 **Request:**
+
 ```json
 {
-  "email": "invited@example.com",
-  "role": "member"
+	"email": "invited@example.com",
+	"role": "member"
 }
 ```
 
 Role defaults to `"member"`.
 
 **Response (200):**
+
 ```json
 {
-  "message": "Invitation sent successfully"
+	"message": "Invitation sent successfully"
 }
 ```
 
 ### DELETE `/organizations/:orgId/invitations/:invitationId`
 
 **Response (200):**
+
 ```json
 {
-  "message": "Invitation revoked"
+	"message": "Invitation revoked"
 }
 ```
 
 ### POST `/organizations/invitations/accept`
 
 **Request:**
+
 ```json
 {
-  "token": "invitation-token-string"
+	"token": "invitation-token-string"
 }
 ```
 
@@ -376,20 +453,22 @@ All endpoints require auth.
 ### POST `/mfa/setup`
 
 **Response (200):**
+
 ```json
 {
-  "secret": "JBSWY3DPEHPK3PXP",
-  "otpauth_url": "otpauth://totp/...",
-  "message": "Scan this QR code with your authenticator app"
+	"secret": "JBSWY3DPEHPK3PXP",
+	"otpauth_url": "otpauth://totp/...",
+	"message": "Scan this QR code with your authenticator app"
 }
 ```
 
 ### POST `/mfa/verify`
 
 **Request:**
+
 ```json
 {
-  "code": "123456"
+	"code": "123456"
 }
 ```
 
@@ -398,9 +477,10 @@ All endpoints require auth.
 ### POST `/mfa/disable`
 
 **Request:**
+
 ```json
 {
-  "code": "123456"
+	"code": "123456"
 }
 ```
 
@@ -411,13 +491,39 @@ All endpoints require auth.
 Used during login when MFA is enabled (after `/auth/login` challenges with MFA).
 
 **Request:**
+
 ```json
 {
-  "code": "123456"
+	"code": "123456",
+	"mfa_pending": "eyJ..."
 }
 ```
 
+`mfa_pending` is the token received from `POST /auth/login` when MFA is enabled.
+
 **Response (200):** `TokenPair`
+
+```json
+{
+	"access_token": "eyJ...",
+	"refresh_token": "eyJ...",
+	"token_type": "bearer"
+}
+```
+
+After receiving `TokenPair`, the frontend stores tokens and calls `GET /auth/me` to fetch user profile + organizations, then redirects to `/dashboard`.
+
+---
+
+### MFA Challenge Flow (Frontend)
+
+1. `POST /auth/login` returns `MfaPendingResponse`
+2. Frontend redirects to `/mfa/challenge?pending_token=<token>`
+3. User enters 6-digit TOTP code
+4. `POST /mfa/validate` with `{ code, mfa_pending }` returns `TokenPair`
+5. Tokens stored in localStorage + cookie
+6. `GET /auth/me` fetches user + organizations
+7. Cache seeded, redirect to `/dashboard`
 
 ---
 
@@ -426,36 +532,40 @@ Used during login when MFA is enabled (after `/auth/login` challenges with MFA).
 ### GET `/billing/verify?reference=paystack-ref`
 
 **Response (200):**
+
 ```json
 {
-  "plan": "pro",
-  "organization_id": "uuid"
+	"plan": "PRO",
+	"organization_id": "uuid"
 }
 ```
 
 ### POST `/billing/organizations/:orgId/initialize`
 
 **Request:**
+
 ```json
 {
-  "plan": "pro",
-  "callback_url": "https://app.example.com/billing/callback"
+	"plan": "pro",
+	"callback_url": "https://app.example.com/billing/callback"
 }
 ```
 
 **Response (200):**
+
 ```json
 {
-  "authorization_url": "https://checkout.paystack.com/..."
+	"authorization_url": "https://checkout.paystack.com/..."
 }
 ```
 
 ### GET `/billing/organizations/:orgId/manage`
 
 **Response (200):**
+
 ```json
 {
-  "manage_url": "https://paystack.com/..."
+	"manage_url": "https://paystack.com/..."
 }
 ```
 
@@ -488,15 +598,16 @@ All endpoints require auth with admin role.
 ### GET `/admin/stats`
 
 **Response (200):**
+
 ```json
 {
-  "user": {
-    "total": 150,
-    "verified": 120
-  },
-  "organizations": {
-    "total": 45
-  }
+	"user": {
+		"total": 150,
+		"verified": 120
+	},
+	"organizations": {
+		"total": 45
+	}
 }
 ```
 
@@ -520,10 +631,10 @@ All endpoints require auth with admin role.
 
 ## OAuth — `/auth/oauth/*`
 
-| Provider | OAuth URL | Callback URL |
-|---|---|---|
-| Google | `GET /auth/oauth/google` → redirects to Google | `GET /auth/oauth/google/callback?code=...` → `TokenPair` |
-| GitHub | `GET /auth/oauth/github` → redirects to GitHub | `GET /auth/oauth/github/callback?code=...` → `TokenPair` |
+| Provider | OAuth URL                                      | Callback URL                                             |
+| -------- | ---------------------------------------------- | -------------------------------------------------------- |
+| Google   | `GET /auth/oauth/google` → redirects to Google | `GET /auth/oauth/google/callback?code=...` → `TokenPair` |
+| GitHub   | `GET /auth/oauth/github` → redirects to GitHub | `GET /auth/oauth/github/callback?code=...` → `TokenPair` |
 
 ---
 
@@ -549,27 +660,28 @@ The frontend expects error bodies to match this shape:
 
 ```json
 {
-  "error": "Human-readable error message",
-  "detail": "More specific detail (fallback field)",
-  "message": "Alternative message field (tertiary fallback)",
-  "code": "MACHINE_READABLE_CODE",
-  "fields": {
-    "email": ["Email is already registered."],
-    "password": ["Password must contain at least one uppercase letter."]
-  }
+	"error": "Human-readable error message",
+	"detail": "More specific detail (fallback field)",
+	"message": "Alternative message field (tertiary fallback)",
+	"code": "MACHINE_READABLE_CODE",
+	"fields": {
+		"email": ["Email is already registered."],
+		"password": ["Password must contain at least one uppercase letter."]
+	}
 }
 ```
 
 ### Status → Error Class Mapping
 
-| HTTP Status | Frontend Class | Default `code` |
-|---|---|---|
-| (no response/network error) | `AuthNetworkError` | `NETWORK` |
-| 401 | `AuthSessionError` | `UNAUTHORIZED` |
-| 400, 422, 409, 429 | `AuthValidationError` | `VALIDATION` |
-| any other | `AuthValidationError` | body's `code` or `UNKNOWN` |
+| HTTP Status                 | Frontend Class        | Default `code`             |
+| --------------------------- | --------------------- | -------------------------- |
+| (no response/network error) | `AuthNetworkError`    | `NETWORK`                  |
+| 401                         | `AuthSessionError`    | `UNAUTHORIZED`             |
+| 400, 422, 409, 429          | `AuthValidationError` | `VALIDATION`               |
+| any other                   | `AuthValidationError` | body's `code` or `UNKNOWN` |
 
 All error classes extend `AuthError`:
+
 ```
 AuthError { name, message, status, code }
 AuthNetworkError { cause }     // status=0

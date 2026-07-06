@@ -10,8 +10,10 @@ import {
 	type PasswordResetConfirm,
 	type UserResponse,
 	type TokenPair,
+	type MfaPendingResponse,
 	TokenPairSchema,
 	UserResponseSchema,
+	MfaPendingResponseSchema,
 } from "@/schemas";
 import { extractApiError, type AuthError } from "./errors";
 import type { CallOptions, TokenStore } from "./types";
@@ -32,7 +34,7 @@ export class AuthService {
 		private readonly tokenStore: TokenStore,
 	) {}
 
-	async login(data: LoginRequest, options?: CallOptions): Promise<TokenPair> {
+	async login(data: LoginRequest, options?: CallOptions): Promise<(TokenPair & { user?: UserResponse }) | MfaPendingResponse> {
 		try {
 			const res = await this.api.post<any>(
 				API_ENDPOINTS.auth.login,
@@ -41,9 +43,17 @@ export class AuthService {
 					signal: options?.signal,
 				},
 			);
+
+			if (res.data.mfa_pending) {
+				return snakeCaseSchema(MfaPendingResponseSchema).parse(res.data);
+			}
+
 			const tokens = snakeCaseSchema(TokenPairSchema).parse(res.data);
+			const user = res.data.user
+				? snakeCaseSchema(UserResponseSchema).parse(res.data.user)
+				: undefined;
 			this.tokenStore.set(tokens.access_token, tokens.refresh_token);
-			return tokens;
+			return { ...tokens, user };
 		} catch (err) {
 			throw extractApiError(err);
 		}
@@ -62,7 +72,9 @@ export class AuthService {
 				},
 			);
 			const tokens = snakeCaseSchema(TokenPairSchema).parse(res.data);
-			const user = snakeCaseSchema(UserResponseSchema).parse(res.data);
+			const user = snakeCaseSchema(UserResponseSchema).parse(
+				res.data.user,
+			);
 			this.tokenStore.set(tokens.access_token, tokens.refresh_token);
 			return { ...tokens, user };
 		} catch (err) {

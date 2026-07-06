@@ -13,11 +13,12 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { ORGANIZATIONS_KEY, useOrganization } from "@/contexts/organization";
+import { useOrganization } from "@/contexts/organization";
 import { useZodForm } from "@/hooks/useZodForm";
+import { ME_KEY } from "@/hooks/useAuth";
 import { billingService, organizationService } from "@/lib/api-services";
 import { PRICING_PLANS } from "@/lib/pricing-plans";
-import { OrgCreateFormSchema, type OrgResponse, PlanTier } from "@/schemas";
+import { OrgCreateFormSchema, type UserResponse, PlanTier } from "@/schemas";
 
 export function OnboardingForm() {
 	const router = useRouter();
@@ -51,10 +52,13 @@ export function OnboardingForm() {
 		onSuccess: (org) => {
 			if (!org) return;
 
-			queryClient.setQueryData<OrgResponse[]>(
-				ORGANIZATIONS_KEY,
-				(old = []) => [...old, org],
-			);
+			queryClient.setQueryData<UserResponse>(ME_KEY, (old) => {
+				if (!old) return old;
+				return {
+					...old,
+					organizations: [...(old.organizations ?? []), org],
+				};
+			});
 			setActiveOrg(org);
 			router.push("/dashboard");
 		},

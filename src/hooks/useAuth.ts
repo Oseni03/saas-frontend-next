@@ -9,6 +9,7 @@ import type {
 	PasswordResetConfirm,
 	UserResponse,
 	TokenPair,
+	MfaPendingResponse,
 } from "@/schemas";
 import type { AuthError } from "@/lib/auth";
 import type { SignupResponse } from "@/lib/auth";
@@ -17,7 +18,7 @@ import { ROUTES, QUERY_KEYS } from "@/lib/config";
 export const ME_KEY = QUERY_KEYS.me;
 
 export function useLogin() {
-	return useMutation<TokenPair, AuthError, LoginRequest>({
+	return useMutation<(TokenPair & { user?: UserResponse }) | MfaPendingResponse, AuthError, LoginRequest>({
 		mutationFn: (data: LoginRequest) => authService.login(data),
 	});
 }
@@ -74,7 +75,7 @@ export function useMe() {
 			if (error?.status === 0 && failureCount < 2) return true;
 			return false;
 		},
-		staleTime: 5 * 60 * 1000,
+		staleTime: Infinity,
 	});
 }
 
